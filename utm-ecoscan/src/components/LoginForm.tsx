@@ -1,7 +1,7 @@
-// src/components/LoginForm.tsx
 import React, { useState } from "react";
 import { login } from "../services/auth";
-import { TextField, Button } from "@mui/material";
+import { TextField, Button, Box, Typography, Paper } from "@mui/material";
+import logo from "../assets/logoClaro.png";
 
 const LoginForm: React.FC = () => {
   const [email, setEmail] = useState("");
@@ -19,60 +19,94 @@ const LoginForm: React.FC = () => {
       setError(err.message);
     }
   };
+
   return (
-      <div>
-        <h2>
+
+    <Box
+      sx={{
+        minHeight: "100vh",
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "center",
+        alignItems: "center",
+        bgcolor: "#ffffffff",
+        padding: 2,
+      }}
+    >
+
+  <Box sx={{ display: "flex", justifyContent: "center", mb: 1 }}>
+    <img src={logo} alt="Logo Empresa" style={{ width: 300, height: 'auto' }} />
+  </Box>
+
+      <Paper
+        elevation={8}
+        sx={{
+          padding: 4,
+          maxWidth: 400,
+          width: "100%",
+          borderRadius: 3,
+          bgcolor: "#ffffffff", 
+        }}
+        >
+        <Typography
+          variant="h4"
+          component="h2"
+          sx={{ textAlign: "center", mb: 3, color: "#000000ff", fontWeight: 600 }}
+        >
           Iniciar Sesión
-        </h2>
+        </Typography>
 
         <form onSubmit={handleSubmit}>
           <TextField
-            type="email" //Tipo de dato 
-            label="Correo electrónico"  //Etiqueta
-            color="primary" //Color principal (azul)
-            value={email} //valor a primer instancia 'null'
-            onChange={(e) => setEmail(e.target.value)} //actualiza 'email' con setEmail 
-            fullWidth //Toma todo el ancho del contenedor
-            variant="outlined"  //Boorde moderno y claro
-            size="medium" //Tamaño general (padding, altura, fuente)
-            helperText ="Introduce un correo valido" //Mensaje posterior
-            error={ !email.includes('@') && email.length > 0 }  //Marca un error si no tiene @
+            type="email"
+            label="Correo electrónico"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            fullWidth
+            variant="outlined"
+            size="medium"
+            margin="normal"
+            helperText={!email.includes("@") && email.length > 0 ? "Introduce un correo válido" : ""}
+            error={!email.includes("@") && email.length > 0}
             required
           />
 
           <TextField
-            type="password" //Tipo de dato
-            label = "Contraseña"  //Etiqueta
-            color = "primary" //Color principal (azul)
-            value={password}  //Valor a primera instancia 'null'
-            onChange={(e) => setPassword(e.target.value)} //actualiza 'password' con setPassword 
-            fullWidth //Toma todo el ancho del contenedor 
-            variant="outlined" //Borde moderno y claro
-            size="medium" //Tamaño general
+            type="password"
+            label="Contraseña"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            fullWidth
+            variant="outlined"
+            size="medium"
+            margin="normal"
             error={passwordError}
             helperText={passwordError ? "La contraseña debe tener al menos 6 caracteres" : ""}
             required
           />
 
           {error && (
-            <p style={{ color: 'red', fontSize: '14px' }}>
+            <Typography variant="body2" sx={{ color: "red", mt: 1, mb: 2 }}>
               {error}
-            </p>
+            </Typography>
           )}
-          <Button
-          variant = 'contained'
-          color="primary"
-          type="submit">Entrar
-          </Button>
-        </form>
 
-        <p>
-          ¿No tienes cuenta?{" "}
-          <span>
-            Regístrate
-          </span>
-        </p>
-      </div>
+          <Button
+            type="submit"
+            variant="contained"
+            fullWidth
+            sx={{
+              mt: 2,
+              bgcolor: "#1de4f7", 
+              "&:hover": { bgcolor: "#1de4f7" },
+              borderRadius: 2,
+              paddingY: 1.2,
+              fontWeight: 600,
+            }}
+          >Entrar</Button>
+        </form>
+      </Paper>
+    </Box>
   );
 };
 
