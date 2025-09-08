@@ -1,14 +1,19 @@
-import React, { useState } from "react";
+//Importaciones
+import React, { useEffect, useState } from "react";
 import { login } from "../services/auth";
-import { TextField, Button, Box, Typography, Paper } from "@mui/material";
+import { TextField, Button, Box, Typography, Paper, colors } from "@mui/material";
 import logo from "../assets/logoClaro.png";
+import { loginWithGoogle, loginWithFacebook } from "../services/auth";
+import GoogleIcon from "../assets/Google.jpg";
 
-const LoginForm: React.FC = () => {
+//Declaramos El componente
+function LoginForm () {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
-  const passwordError = password.length > 0 && password.length < 6;
-
+  const passwordError = password.length > 0 && password.length < 4;
+  
+  //Funcion Asincrona(sin afectar ejecucion principal)
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
@@ -16,48 +21,48 @@ const LoginForm: React.FC = () => {
       await login(email, password);
       alert("¡Login exitoso!");
     } catch (err: any) {
-      setError(err.message);
+      alert("!Error, Credenciales Incorrectas¡")
     }
   };
 
   return (
+//Box (Es como un div pero con estilos integrados Gracias a UI)
+<Box sx={{minHeight: "90vh",display: "flex",flexDirection: "column",justifyContent: "center",
+      alignItems: "center",border: "2px solid #1de4f7",padding: 2,
+      backgroundColor: "#ffffffff",
+      backgroundImage: './assets/',  backgroundSize: "cover", backgroundPosition: "center", borderRadius:"20px",
+      }}>
+      <Box sx={{ display: "flex", justifyContent: "center", mb: 1, border: "2px solid red", }}>
+        <img src={logo} alt="Logo UTMECOSCAN" style={{ width: 300, height: 'auto' }} />
+      </Box>
 
-    <Box
-      sx={{
-        minHeight: "100vh",
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "center",
-        alignItems: "center",
-        bgcolor: "#ffffffff",
-        padding: 2,
-      }}
-    >
+      <Paper elevation={2} sx={{ padding: 1, maxWidth: 400, width: "100%", borderRadius: 3, border:"2px solid green",
+          bgcolor: "#ffffffff", }}>
 
-  <Box sx={{ display: "flex", justifyContent: "center", mb: 1 }}>
-    <img src={logo} alt="Logo Empresa" style={{ width: 300, height: 'auto' }} />
-  </Box>
-
-      <Paper
-        elevation={8}
-        sx={{
-          padding: 4,
-          maxWidth: 400,
-          width: "100%",
-          borderRadius: 3,
-          bgcolor: "#ffffffff", 
-        }}
-        >
-        <Typography
-          variant="h4"
-          component="h2"
-          sx={{ textAlign: "center", mb: 3, color: "#000000ff", fontWeight: 600 }}
-        >
-          Iniciar Sesión
+        <Typography variant="h4" component="h2" 
+        sx={{ textAlign: "left", mb: 1, color: "#000000ff", fontWeight: 1000, border:"2px solid orange" }}>
+        Iniciar Sesión
         </Typography>
 
         <form onSubmit={handleSubmit}>
           <TextField
+          /* 🖌️ */
+          sx={{
+          "& .MuiOutlinedInput-root": {
+          "& fieldset": {
+          borderColor: "#abb4b4ff", //color normal
+          },
+          "&:hover fieldset": {
+          borderColor: "#00bcd4", //cuando pasas el mouse
+          },
+          "&.Mui-focused fieldset": {
+          borderColor: "#00bcd4", //cuando está enfocado
+          },
+          },
+          input: { color: "black" }, // texto dentro del input
+          label: { color: "grey" }, // label
+          border:"2px solid orange"
+          }}
             type="email"
             label="Correo electrónico"
             value={email}
@@ -69,9 +74,26 @@ const LoginForm: React.FC = () => {
             helperText={!email.includes("@") && email.length > 0 ? "Introduce un correo válido" : ""}
             error={!email.includes("@") && email.length > 0}
             required
+            
           />
 
           <TextField
+          /* 🖌️ */
+          sx={{
+          "& .MuiOutlinedInput-root": {
+          "& fieldset": {
+          borderColor: "#abb4b4ff", //color normal
+          },
+          "&:hover fieldset": {
+          borderColor: "#00bcd4", //cuando pasas el mouse
+          },
+          "&.Mui-focused fieldset": {
+          borderColor: "#00bcd4", //cuando está enfocado
+          },
+          },
+          input: { color: "black" }, // texto dentro del input
+          label: { color: "grey" }, // label
+          }}
             type="password"
             label="Contraseña"
             value={password}
@@ -103,10 +125,43 @@ const LoginForm: React.FC = () => {
               paddingY: 1.2,
               fontWeight: 600,
             }}
-          >Entrar</Button>
+          >Iniciar Sesión</Button>
         </form>
       </Paper>
-    </Box>
+      <Box
+      sx={{
+        color:"black",
+        fontWeight:600,
+        mt:2,
+      }}
+      >
+      O inicia sesión con
+      </Box>
+<Button
+  variant="outlined"
+  fullWidth
+  onClick={loginWithGoogle}
+  sx={{
+    mt: 2,
+    textTransform: "none", // mantiene mayúsculas/minúsculas normales
+    fontWeight: "bold",
+    borderColor: "#b0b2b4ff",
+    color: "black",
+    backgroundColor: "white",
+    "&:hover": {
+      backgroundColor: "#f5f5f5",
+      borderColor: "#c6c6c6",
+    },
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    gap: 1, 
+  }}
+>
+  <img src={GoogleIcon} alt="Google" style={{ width: 20, height: 20 }} />
+  Iniciar sesión con Google
+</Button>
+</Box>
   );
 };
 
