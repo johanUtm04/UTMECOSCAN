@@ -1,0 +1,104 @@
+# 1️⃣ Ver en qué rama estás
+git branch
+
+# 2️⃣ Ver cambios locales
+git status
+
+# 3️⃣ Traer info del remoto sin hacer merge
+git fetch
+git status
+
+# 4️⃣ Comparar tu rama con el remoto
+git log origin/main..HEAD      # commits locales que no están en remoto
+git log HEAD..origin/main      # commits remotos que no tienes
+
+# 5️⃣ Traer cambios del remoto y actualizar tu rama
+git pull
+
+# 6️⃣ Ver todos los remotos configurados
+git remote -v
+
+# 7️⃣ Ver diferencias entre local y remoto
+git diff origin/main
+
+# 8️⃣ Preparar archivos para commit (añadir cambios)
+git add .                      # añade todos los cambios
+# o git add <archivo>          # añade solo un archivo específico
+
+# 9️⃣ Hacer commit
+git commit -m "Mensaje de tu commit"
+
+# 🔟 Subir cambios al remoto
+git push
+
+Link firebase:
+https://console.firebase.google.com/u/0/project/contaminacion-en-el-aire-utm/overview
+
+Usuarios base de datos
+https://console.firebase.google.com/u/0/project/contaminacion-en-el-aire-utm/authentication/users
+
+Codigo Creado...
+main.tsx---->  App.stx / auth.ts---->
+
+probar Tablero
+const [lecturas, setLecturas] = useState<Lectura[]>([]);
+
+useEffect(() => {
+  const fetchData = async () => {
+    try {
+      // Lista de sensores de ejemplo
+      const sensores = ["PM2.5", "Temperatura", "Humedad", "CO2"];
+
+      // Generamos un sensor aleatorio
+      const data = {
+        sensor: sensores[Math.floor(Math.random() * sensores.length)],
+        pm25: Math.floor(Math.random() * 100), // valor aleatorio entre 0-99
+      };
+
+      // Creamos un objeto nuevaLectura siguiendo la interfaz Lectura
+      const nuevaLectura: Lectura = {
+        id: Date.now().toString(), // id único
+        sensor: data.sensor,
+        valor: data.pm25,
+      };
+
+      // Agregamos la lectura al estado (sin borrar las anteriores)
+      setLecturas((prev) => [...prev, nuevaLectura]);
+
+    } catch (err) {
+      console.error("Error al generar datos:", err);
+    }
+  };
+
+  // Llamamos cada 5 segundos para simular lecturas continuas
+  const interval = setInterval(fetchData, 5000);
+  return () => clearInterval(interval);
+}, []);
+
+Funcion que si Funciona: ✨✨🧨🧨🧨🎇🎇🎆🎆🎆🎆🎈
+   useEffect(() => {
+    //Funcion Asincronada (puede hacer coas que tardan en completarse)
+    const fetchData = async () => {
+      try {
+        /* Con await, esperamos a que sea conectado el esp32 */
+        const res = await fetch("http://192.168.1.97/json"); 
+        //Convertimos los datos en un objeto JavaScript (Json)
+        const data = await res.json();
+        // Adaptamos el JSON a la interfaz Lectura[]
+        //Creamos Una instancia del objeto "lectura"
+        const nuevaLectura: Lectura = {
+          id: Date.now().toString(),
+          sensor: data.sensor,
+          valor: data.pm25,
+        };
+        //Ir encadenando lecturas una atras de otra
+        setLecturas((prev) => [...prev, nuevaLectura]); 
+      } catch (err) {
+        console.error("Error al obtener datos:", err);
+      }
+    };
+
+    // Llamamos cada 5 segundos
+    const interval = setInterval(fetchData, 5000);
+    return () => clearInterval(interval);
+  }, []);

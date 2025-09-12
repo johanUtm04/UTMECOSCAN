@@ -5,7 +5,7 @@ import {
   signInWithEmailAndPassword,
   signOut,
   type User,
-  onAuthStateChanged,
+  onAuthStateChanged, //Aqui llamamos una funcion tipo unsubscribe
 } from "firebase/auth";
 
 
@@ -21,7 +21,14 @@ export const logout = async () => {
   return signOut(auth);
 };
 
+//LISTENER -- USUARIO EN BD
+/* ❗❓ No olvidemos que "export" es que pueda ser usada desde otras partes del codigo*/
+/* ✍ llamarDeVuelta== aquí, esperamos un parametro llamado user o es user | es vacio
+y no devuelve nada "=>void" */
+/* ✍ Mi funcion "onUserStateChanged" va a recibir un parametro llamarDeVuelta, que se ejecuta cada que hay un usuario logeado(User) o deslogeado(null)
+es una funcion que recibe otra funcion*/
 export const onUserStateChanged = (callback: (user: User | null) => void) => {
+  //✍llamamos "onAuthStateChanged" de firebase, y le pasamos auth y la funcion "llamarDeVuelta".
   return onAuthStateChanged(auth, callback);
 };
 
