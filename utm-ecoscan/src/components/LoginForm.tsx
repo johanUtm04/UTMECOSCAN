@@ -5,6 +5,8 @@ import { TextField, Button, Box, Typography, Paper, colors } from "@mui/material
 import logo from "../assets/logoClaro.png";
 import { loginWithGoogle, loginWithFacebook } from "../services/auth";
 import GoogleIcon from "../assets/Google.jpg";
+import GitIcon from "../assets/GitHub.png"
+import { loginWithGitHub } from "../firebase";
 
 //Declaramos El componente
 function LoginForm () {
@@ -28,19 +30,19 @@ function LoginForm () {
   return (
 //Box (Es como un div pero con estilos integrados Gracias a UI)
 <Box sx={{minHeight: "90vh",display: "flex",flexDirection: "column",justifyContent: "center",
-      alignItems: "center",border: "2px solid #1de4f7",padding: 2,
+      alignItems: "center",border: "5px solid #1de4f7",padding: 2,
       backgroundColor: "#ffffffff",
       backgroundImage: './assets/',  backgroundSize: "cover", backgroundPosition: "center", borderRadius:"20px",
       }}>
-      <Box sx={{ display: "flex", justifyContent: "center", mb: 1, border: "2px solid red", }}>
+      <Box sx={{ display: "flex", justifyContent: "center", mb: 1,}}>
         <img src={logo} alt="Logo UTMECOSCAN" style={{ width: 300, height: 'auto' }} />
       </Box>
 
-      <Paper elevation={2} sx={{ padding: 1, maxWidth: 400, width: "100%", borderRadius: 3, border:"2px solid green",
+      <Paper elevation={8} sx={{ padding: 1, maxWidth: 400, width: "100%", borderRadius: 3,
           bgcolor: "#ffffffff", }}>
 
         <Typography variant="h4" component="h2" 
-        sx={{ textAlign: "left", mb: 1, color: "#000000ff", fontWeight: 1000, border:"2px solid orange" }}>
+        sx={{ textAlign: "left", mb: 1, color: "#000000ff", fontWeight: 1000, }}>
         Iniciar Sesión
         </Typography>
 
@@ -61,7 +63,6 @@ function LoginForm () {
           },
           input: { color: "black" }, // texto dentro del input
           label: { color: "grey" }, // label
-          border:"2px solid orange"
           }}
             type="email"
             label="Correo electrónico"
@@ -161,6 +162,32 @@ function LoginForm () {
   <img src={GoogleIcon} alt="Google" style={{ width: 20, height: 20 }} />
   Iniciar sesión con Google
 </Button>
+
+<Button
+  variant="outlined"
+  fullWidth
+  onClick={loginWithGitHub}
+  sx={{
+    mt: 2,
+    textTransform: "none", 
+    fontWeight: "bold",
+    borderColor: "#b0b2b4ff",
+    color: "black",
+    backgroundColor: "white",
+    "&:hover": {
+      backgroundColor: "#f5f5f5",
+      borderColor: "#c6c6c6",
+    },
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    gap: 1, 
+  }}
+>
+  <img src={GitIcon} alt="GitHub" style={{ width: 20, height: 20 }} />
+  Iniciar sesión con GitHub
+</Button>
+
 </Box>
   );
 };

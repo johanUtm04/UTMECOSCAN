@@ -51,7 +51,7 @@ sx={{minHeight: "90vh",display: "flex",flexDirection: "column",justifyContent: "
       backgroundImage: './assets/',  backgroundSize: "cover", backgroundPosition: "center", borderRadius:"20px",
       }}
   >
-  <Box sx={{ display: "flex", justifyContent: "center", mb: 1, border: "2px solid red", }}>
+  <Box sx={{ display: "flex", justifyContent: "center", mb: 1,}}>
   <img src={logo} alt="Logo UTMECOSCAN" style={{ width: 300, height: 'auto' }} />
   </Box>
   <Paper
@@ -62,7 +62,6 @@ sx={{minHeight: "90vh",display: "flex",flexDirection: "column",justifyContent: "
     width: "100%",
     borderRadius: 5,
     bgcolor: "#000000ff", 
-    border:"2px solid red"
     }}
     >
     <Typography

@@ -65,6 +65,13 @@ useEffect(() => {
       // Agregamos la lectura al estado (sin borrar las anteriores)
       setLecturas((prev) => [...prev, nuevaLectura]);
 
+      //Nuevo paso: 🔥
+      await addDoc(collection(db, "lecturas")){
+      sensor: data.sensor
+      valor: timestamp
+      salon: "Aula 1"
+      userId: user?.uid, })
+
     } catch (err) {
       console.error("Error al generar datos:", err);
     }
@@ -102,3 +109,10 @@ Funcion que si Funciona: ✨✨🧨🧨🧨🎇🎇🎆🎆🎆🎆🎈
     const interval = setInterval(fetchData, 5000);
     return () => clearInterval(interval);
   }, []);
+
+
+
+-Boton para iniciar o parar Ejecucion
+-Inicio de Sesion con Git-hub
+-error al tener ya un correo registrado
+-Div principal
