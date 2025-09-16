@@ -1,10 +1,11 @@
-// src/firebase.ts
+/* Importaciones ----- 🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢*/
 import { initializeApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
-import { getAuth, GoogleAuthProvider, FacebookAuthProvider, GithubAuthProvider ,
-signInWithPopup } from "firebase/auth";
-import App from "./App";
+import { getAuth, GoogleAuthProvider, FacebookAuthProvider,
+signInWithPopup,} from "firebase/auth";
+/* Importaciones ----- 🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢*/
 
+//Conexion con firebase🟢
 const firebaseConfig = {
   apiKey: "AIzaSyBt3zvwsVGjs0D2hM5JVwoxRUJgJaHKGd0",
   authDomain: "contaminacion-en-el-aire-utm.firebaseapp.com",
@@ -14,31 +15,14 @@ const firebaseConfig = {
   appId: "1:486719268700:web:c83bd86ad530eeb0100399"
 };
 
-//Inicializar Firebase
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const provider = new GithubAuthProvider();
+//Inicializar Firebase🟢
+  const app = initializeApp(firebaseConfig);
+//{initializeApp} es la funcion encargada de arrancar firebase, dentro, ´firebaseConfig´ es la configuracion que yo le asigne
 
-
-//Iniciar sesion con github
-  //Funcion flecha Async para esperar un await
-export const loginWithGitHub = async () => {
-  try{
-    const result = await signInWithPopup(auth, provider);
-    const user = result.user
-
-    //Token de gitub
-    const credential = GithubAuthProvider.credentialFromResult(result);
-    const token = credential?.accessToken;
-    console.log("Token: ", token);
-
-    return user;
-  } catch(error: any){
-    console.error("Error al inciar sesion con git, por lo siguiente: ", error)
-  }
-}
-
-
+//Inicializar Autenticacion🟢
+  const auth = getAuth(app);
+//{getAuth} es la funcion encargada de obtener el modulo de autenticacion, ´app´ es la constante que acabo de iniciar y le pido un modulo para
+//mi app
 
 //Providers
 const googleProvider = new GoogleAuthProvider();

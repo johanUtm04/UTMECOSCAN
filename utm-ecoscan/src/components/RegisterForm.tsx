@@ -10,11 +10,20 @@ const RegisterForm: React.FC = () => {
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [checked, setChecked] = useState<boolean>(false);
-  
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-  setChecked(event.target.checked);
+
+
+  //Mapear Errores 🟢🟢🟢🟢
+  const msjError = (codigo: string): string => {
+  const errores: Record<string, string> = {
+    "auth/email-already-in-use": "Este correo ya está registrado.",
+    "auth/invalid-email": "El correo no es válido.",
+    "auth/weak-password": "La contraseña es muy débil.",
   };
 
+  return errores[codigo] || "Ocurrió un error inesperado, intenta de nuevo.";
+    }
+  
+//Mapear Errores 🟢🟢🟢🟢
   const handleLogin = () =>{
     if (checked) {
       localStorage.setItem("remember", "true");
@@ -31,6 +40,7 @@ const RegisterForm: React.FC = () => {
     }
   },[]);
 
+//Mapear Errores 🟢🟢🟢🟢
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
@@ -38,7 +48,16 @@ const RegisterForm: React.FC = () => {
       await register(email, password);
       alert("¡Registro exitoso!");
     } catch (err: any) {
-      setError(err.message);
+      console.log('error: ', err)
+
+      const code = err.code;
+
+      if (code) {
+        setError(msjError(code));
+        console.log('el error exacto es:', error);
+      }else{
+        setError("Ocurrió un error inesperado, intenta de nuevo.");
+      }
     }
   };
 
@@ -71,6 +90,7 @@ sx={{minHeight: "90vh",display: "flex",flexDirection: "column",justifyContent: "
       >Registrate
     </Typography>
 
+{/*Mapear Errores 🟢🟢🟢🟢 */}
     <form onSubmit={handleSubmit}>
       <TextField
           sx={{
@@ -141,7 +161,7 @@ sx={{minHeight: "90vh",display: "flex",flexDirection: "column",justifyContent: "
                       color:"#00bcd4"
                     }
                   }}
-                   />
+                  />
                 }
                 label="Recordarme"
                 sx={{
@@ -163,7 +183,7 @@ sx={{minHeight: "90vh",display: "flex",flexDirection: "column",justifyContent: "
             onClick={handleLogin}
             
           >Registrar</Button>
-      {error && <p style={{ color: "red" }}>{error}</p>}
+      {error && <p style={{ color: "blue" }}>{error}</p>}
     </form>
   </Paper>
 </Box>

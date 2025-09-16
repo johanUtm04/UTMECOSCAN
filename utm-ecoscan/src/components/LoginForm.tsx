@@ -6,7 +6,6 @@ import logo from "../assets/logoClaro.png";
 import { loginWithGoogle, loginWithFacebook } from "../services/auth";
 import GoogleIcon from "../assets/Google.jpg";
 import GitIcon from "../assets/GitHub.png"
-import { loginWithGitHub } from "../firebase";
 
 //Declaramos El componente
 function LoginForm () {
@@ -163,30 +162,6 @@ function LoginForm () {
   Iniciar sesión con Google
 </Button>
 
-<Button
-  variant="outlined"
-  fullWidth
-  onClick={loginWithGitHub}
-  sx={{
-    mt: 2,
-    textTransform: "none", 
-    fontWeight: "bold",
-    borderColor: "#b0b2b4ff",
-    color: "black",
-    backgroundColor: "white",
-    "&:hover": {
-      backgroundColor: "#f5f5f5",
-      borderColor: "#c6c6c6",
-    },
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    gap: 1, 
-  }}
->
-  <img src={GitIcon} alt="GitHub" style={{ width: 20, height: 20 }} />
-  Iniciar sesión con GitHub
-</Button>
 
 </Box>
   );

@@ -113,6 +113,6 @@ Funcion que si Funciona: ✨✨🧨🧨🧨🎇🎇🎆🎆🎆🎆🎈
 
 
 -Boton para iniciar o parar Ejecucion
--Inicio de Sesion con Git-hub
+-Inicio de Sesion con Git-hub (detalles de copiar correo)
 -error al tener ya un correo registrado
--Div principal
+-Particulas en el inicio

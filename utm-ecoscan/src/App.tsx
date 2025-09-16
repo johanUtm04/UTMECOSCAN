@@ -47,7 +47,7 @@ useEffect(() => {
             top: 0,
             left: 0,
           }}
-        />
+        />        
         {/* Div del formulario */}
         <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center",
           minHeight: "100vh", padding: "20px", color: "white", position: "relative", zIndex: 1, overflowY: "auto" }}>
@@ -76,8 +76,7 @@ useEffect(() => {
   /* Si hay un usuario autenticado Dibujamos esta seccion */
   return (
   /* Div principal */
-  <div style={{ position: "relative", width: "100%", minHeight: "100vh", overflow: "hidden" }}
-  >
+  <div style={{ position: "relative", width: "100%", minHeight: "100vh", overflow: "hidden" }}>
   <img 
     src={fondoTablero} 
     alt="Fondo tablero"
