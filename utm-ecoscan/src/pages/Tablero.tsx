@@ -25,7 +25,6 @@ interface Lectura {
 
 const Tablero: React.FC<TABLERO> = ({ user }) => {
 const [lecturas, setLecturas] = useState<Lectura[]>([]);
-
 const [fechaSeleccionada, setFechaSeleccionada] = useState<Date | null > (null);
 
 
@@ -74,45 +73,33 @@ async function getLecturasPorDia (fecha: Date){
   return resultados;
 };
 
-useEffect(() => {
-  const fetchData = async () => {
-    try {
-      // Lista de sensores de ejemplo
-      const sensores = ["PM2.5", "Temperatura", "Humedad", "CO2"];
+   useEffect(() => {
+    //Funcion Asincronada (puede hacer coas que tardan en completarse)
+    const fetchData = async () => {
+      try {
+        /* Con await, esperamos a que sea conectado el esp32 */
+        const res = await fetch("http://192.168.1.97/data-json"); 
+        //Convertimos los datos en un objeto JavaScript (Json)
+        const data = await res.json();
+        // Adaptamos el JSON a la interfaz Lectura[]
+        //Creamos Una instancia del objeto "lectura"
+        const nuevaLectura: Lectura = {
+          timestamp: Timestamp.now(),
+          id: Date.now().toString(),
+          sensor: data.sensor,
+          valor: data.pm25,
+        };
+        //Ir encadenando lecturas una atras de otra
+        setLecturas((prev) => [...prev, nuevaLectura]); 
+      } catch (err) {
+        console.error("Error al obtener datos:", err);
+      }
+    };
 
-      // Generamos un sensor aleatorio
-      const data = {
-        sensor: sensores[Math.floor(Math.random() * sensores.length)],
-        pm25: Math.floor(Math.random() * 100),
-      };
-
-      // Creamos un objeto nuevaLectura siguiendo la interfaz Lectura
-      const nuevaLectura: Lectura = {
-        id: Date.now().toString(),
-        sensor: data.sensor,
-        valor: data.pm25,
-        timestamp: Timestamp.now(),
-      };
-
-      // Agregamos la lectura al estado (sin borrar las anteriores)
-      setLecturas((prev) => [...prev, nuevaLectura]);
-
-      await addDoc(collection(db,"lecturas"),{
-        sensor: data.sensor, 
-        valor: data.pm25,
-        timestamp: nuevaLectura.timestamp,
-        salon: "Salon A10",
-        userId: user?.uid,
-      }); 
-    } catch (err) {
-      console.error("Error al generar datos:", err);
-    }
-  };
-
-  // Llamamos cada 5 segundos para simular lecturas continuas
-  const interval = setInterval(fetchData, 20000);
-  return () => clearInterval(interval);
-}, []);
+    // Llamamos cada 5 segundos
+    const interval = setInterval(fetchData, 20000);
+    return () => clearInterval(interval);
+  }, []);
 
 //UsEffect para traer Datos y almacenarlos en fireStore
 
@@ -157,7 +144,7 @@ return (
       <ul>
         {lecturas.map((l) => (
           <li key={l.id}>
-            {l.sensor} =&rbrace; {l.valor} (📅 {l.timestamp.toDate().toLocaleString()})
+            {l.sensor} =&rbrace; {l.valor} ({l.timestamp.toDate().toLocaleString()})
           </li>
         ))}
       </ul>

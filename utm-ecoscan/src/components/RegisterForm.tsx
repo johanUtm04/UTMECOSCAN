@@ -28,7 +28,7 @@ const RegisterForm: React.FC = () => {
     if (checked) {
       localStorage.setItem("remember", "true");
     }else{
-      localStorage.removeItem("rememberMe");
+      localStorage.removeItem("remember");
     }
     console.log("Intento de login, con recordarme", checked)
   };
@@ -183,7 +183,7 @@ sx={{minHeight: "90vh",display: "flex",flexDirection: "column",justifyContent: "
             onClick={handleLogin}
             
           >Registrar</Button>
-      {error && <p style={{ color: "blue" }}>{error}</p>}
+      {error && <p style={{ color: "red", fontWeight:600 }}>{error}</p>}
     </form>
   </Paper>
 </Box>
