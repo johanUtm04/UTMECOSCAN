@@ -154,9 +154,9 @@ return (
       >
       <h2> Historial de Lecturas</h2>
       <div style={{display:"flex", /* para que sea flexible */ gap:"10px", /* espacio entre los elementos  */marginBottom:"20px" /* margen inferior */}}>
-      <button onClick={()=> setSensorActivo("PM2.5")}>PM2.5</button>
-      <button onClick={()=> setSensorActivo("CO2")}>CO2</button>
-      <button onClick={()=> setSensorActivo("Temperatura")}>Temperatura</button>
+      <button className="buttonPM" onClick={()=> setSensorActivo("PM2.5")}>PM2.5</button>
+      <button className="buttonCO2" onClick={()=> setSensorActivo("CO2")}>CO2</button>
+      <button className="buttonTemp" onClick={()=> setSensorActivo("Temperatura")}>Temperatura</button>
       </div>
       </div>
       <input type="date"
@@ -215,7 +215,7 @@ return (
             <CardHeader title={l.sensor} sx={{ color: "#000000ff" }} />
             <CardContent>
               <Typography variant="h5" sx={{ color: "#000000ff" }}>
-                {l.valor} 
+                {l.valor ?? "Sin Valor registrado"} 
               </Typography>
               <Typography variant="body2" sx={{ color: "#000000ff" }}>
                 Última actualización 

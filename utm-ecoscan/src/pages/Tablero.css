@@ -1,64 +1,195 @@
-.button-57 {
+/* Boton PM2.5 Y PM10 */
+.buttonPM {
+  all: unset;
+  display: flex;
+  align-items: center;
   position: relative;
-  overflow: hidden;
-  border: 2px solid #000000;
-  color: #110b3b;
-  display: inline-block;
-  font-size: 15px;
-  line-height: 15px;
-  padding: 18px 18px 17px;
-  text-decoration: none;
+  padding: 0.6em 2em;
+  border: #18a39b solid 0.15em; 
+  border-radius: 0.25em;
+  color: #18a39b; 
+  font-size: 1.5em;
+  font-weight: 600;
   cursor: pointer;
-  background: #88a2f6;
+  overflow: hidden;
+  transition: border 300ms, color 300ms;
   user-select: none;
-  -webkit-user-select: none;
-  touch-action: manipulation;
-  border-radius: 10px;
-  font-weight: bold;
 }
 
-.button-57 span:first-child {
-  position: relative;
-  transition: color 600ms cubic-bezier(0.48, 0, 0.12, 1);
-  z-index: 10;
+.buttonPM p {
+  z-index: 1;
 }
 
-.button-57 span:last-child {
-  color: white;
-  display: block;
-  position: absolute;
-  bottom: 0;
-  transition: all 500ms cubic-bezier(0.48, 0, 0.12, 1);
-  z-index: 100;
-  opacity: 0;
-  top: 50%;
-  left: 50%;
-  transform: translateY(225%) translateX(-50%);
-  height: 14px;
-  line-height: 13px;
+.buttonPM:hover {
+  color: #ffffff; 
+  font-weight: 700;
 }
 
-.button-57:after {
+.buttonPM:active {
+  border-color: #006b66;
+}
+
+.buttonPM::after, .buttonPM::before {
   content: "";
   position: absolute;
-  bottom: -50%;
+  width: 9em;
+  aspect-ratio: 1;
+  background: #18a39b; 
+  opacity: 50%;
+  border-radius: 50%;
+  transition: transform 500ms, background 300ms;
+}
+
+.buttonPM::before {
   left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: black;
-  transform-origin: bottom center;
-  transition: transform 600ms cubic-bezier(0.48, 0, 0.12, 1);
-  transform: skewY(9.3deg) scaleY(0);
-  z-index: 50;
+  transform: translateX(-8em);
 }
 
-.button-57:hover:after {
-  transform-origin: bottom center;
-  transform: skewY(9.3deg) scaleY(2);
+.buttonPM::after {
+  right: 0;
+  transform: translateX(8em);
 }
 
-.button-57:hover span:last-child {
-  transform: translateX(-50%) translateY(-100%);
-  opacity: 1;
-  transition: all 900ms cubic-bezier(0.48, 0, 0.12, 1);
+.buttonPM:hover:before {
+  transform: translateX(-1em);
+}
+
+.buttonPM:hover:after {
+  transform: translateX(1em);
+}
+
+.buttonPM:active:before,
+.buttonPM:active:after {
+  background: #006b66; 
+}
+
+
+/* Boton C02 verde */
+.buttonCO2 {
+  all: unset;
+  display: flex;
+  align-items: center;
+  position: relative;
+  padding: 0.6em 2em;
+  border: #4CAF50 solid 0.15em;
+  border-radius: 0.25em;
+  color: #4CAF50; 
+  font-size: 1.5em;
+  font-weight: 600;
+  cursor: pointer;
+  overflow: hidden;
+  transition: border 300ms, color 300ms;
+  user-select: none;
+}
+
+.buttonCO2 p {
+  z-index: 1;
+}
+
+.buttonCO2:hover {
+  color: #ffffff;
+  font-weight: 700;
+}
+
+.buttonCO2:active {
+  border-color: #2E7D32;} 
+
+.buttonCO2::after, .buttonCO2::before {
+  content: "";
+  position: absolute;
+  width: 9em;
+  aspect-ratio: 1;
+  background: #4CAF50;
+  opacity: 50%;
+  border-radius: 50%;
+  transition: transform 500ms, background 300ms;
+}
+
+.buttonCO2::before {
+  left: 0;
+  transform: translateX(-8em);
+}
+
+.buttonCO2::after {
+  right: 0;
+  transform: translateX(8em);
+}
+
+.buttonCO2:hover:before {
+  transform: translateX(-1em);
+}
+
+.buttonCO2:hover:after {
+  transform: translateX(1em);
+}
+
+.buttonCO2:active:before,
+.buttonCO2:active:after {
+  background: #2E7D32;
+}
+
+
+/* Boton Temparatura */
+.buttonTemp {
+  all: unset;
+  display: flex;
+  align-items: center;
+  position: relative;
+  padding: 0.6em 2em;
+  border: #FF5722 solid 0.15em; 
+  border-radius: 0.25em;
+  color: #FF5722; 
+  font-size: 1.5em;
+  font-weight: 600;
+  cursor: pointer;
+  overflow: hidden;
+  transition: border 300ms, color 300ms;
+  user-select: none;
+}
+
+.buttonTemp p {
+  z-index: 1;
+}
+
+.buttonTemp:hover {
+  color: #ffffff;
+  font-weight: 700;
+}
+
+.buttonTemp:active {
+  border-color: #E64A19; 
+}
+
+.buttonTemp::after, .buttonTemp::before {
+  content: "";
+  position: absolute;
+  width: 9em;
+  aspect-ratio: 1;
+  background: #FF5722;
+  opacity: 50%;
+  border-radius: 50%;
+  transition: transform 500ms, background 300ms;
+}
+
+.buttonTemp::before {
+  left: 0;
+  transform: translateX(-8em);
+}
+
+.buttonTemp::after {
+  right: 0;
+  transform: translateX(8em);
+}
+
+.buttonTemp:hover:before {
+  transform: translateX(-1em);
+}
+
+.buttonTemp:hover:after {
+  transform: translateX(1em);
+}
+
+.buttonTemp:active:before,
+.buttonTemp:active:after {
+  background: #E64A19;
 }
