@@ -7,14 +7,33 @@ import Tablero from "./pages/Tablero";
 import Button from '@mui/material/Button';
 import Fondo from './assets/5072612.jpg';
 import { Typography } from "@mui/material";
-import logo from './assets/tics.jfif';
+import logo from './assets/logo.gif';
 import fondoTablero from "./assets/fondoTablero.jpg";
+import "./App.css"
+
+import Menu from "@mui/material/Menu";
+import MenuItem from "@mui/material/MenuItem";
+import IconButton from "@mui/material/IconButton";
+import AccountCircle from "@mui/icons-material/AccountCircle";
+
 
 function App() {
   const [usuario, setUsuario] = useState<any>(null); 
   const [showRegister, setShowRegister] = useState(false);
   const [fechaHora, setFechaHora] = useState(new Date());
-  const [hover, setHover] = useState(false);
+
+
+  //Menu en la img del usuario
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const open = Boolean(anchorEl);
+
+  const handleMenu = (event: React.MouseEvent<HTMLElement>) => {
+  setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+  setAnchorEl(null);
+  };
 
 useEffect(() => {
   const intervalo = setInterval(() => {
@@ -50,7 +69,7 @@ useEffect(() => {
         />        
         {/* Div del formulario */}
         <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center",
-          minHeight: "100vh", padding: "20px", color: "white", position: "relative", zIndex: 1, overflowY: "auto" }}>
+          minHeight: "100vh", padding: "5px", color: "white", position: "relative", zIndex: 1, overflowY: "auto" }}>
           {/* Condicional si es true nos vamos a  registro, 
           y si es false a Login, este valor booleano lo controlamos con El Onclick*/}
           {showRegister ? <RegisterForm /> : <LoginForm />}
@@ -102,36 +121,67 @@ useEffect(() => {
     marginBottom: "20px",
     border: "3px solid black",
   }}>
-  <img src={logo}  alt="Logo tics utm" style={{ height: "50px", filter: hover ? "brightness(1.2)" : "brightness(1)" }}
-    onMouseEnter={() => setHover(true)}
-    onMouseLeave={() => setHover(false)}
+  <img
+    src={logo}
+    alt="Logo tics utm"
+    className="logo-tics"
+    onClick={() =>
+      window.open(
+        "https://ut-morelia.edu.mx/index.php/tecnologias-de-la-informacion/",
+        "_blank"
+      )
+    }
   />
+
     <Typography variant="h5"  sx={{fontWeight:600, color:"#110b3b"}}>
     Sistema de Medicion de Calidad del Aire
   </Typography>
-  {usuario && usuario.photoURL && (
-  <img 
-    src={usuario.photoURL} 
-    alt={usuario.displayName} 
-    style={{ width: "40px", height: "40px", borderRadius: "50%", border: "3px solid #110b3b" }} 
-  />
-)}
 
-  {/* Nombre de Google */}
-  <Typography variant="h6" sx={{fontWeight:600, color:"#110b3b"}}>
-  Bienvenido, {usuario.displayName || usuario.email}
+<div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+  <Typography variant="h6" sx={{ fontWeight: 600, color: "#ffffffff" }}>
+    Bienvenido, {usuario.displayName || usuario.email}
   </Typography>
-  <Button
-    variant="contained"
-    color="error"
-    onClick={() => { logout(); setUsuario(null); }}
-    sx={
-      {
-      fontWeight:500,
-      border: "3px solid #110b3b",
-      }
-    }
-  >Cerrar sesión</Button>
+
+  {/* Avatar con menú */}
+  <IconButton
+    size="large"
+    onClick={handleMenu}
+    color="inherit"
+
+    >
+    {usuario.photoURL ? (
+      <img
+        src={usuario.photoURL}
+        alt={usuario.displayName}
+        style={{ width: "40px", height: "40px", borderRadius: "50%" }}
+      />
+    ) : (
+      <AccountCircle sx={{ fontSize: 40, color: "#110b3b" }} />
+    )}
+  </IconButton>
+
+  {/* Menú desplegable */}
+  <Menu
+    anchorEl={anchorEl}
+    open={open}
+    onClose={handleClose}
+    anchorOrigin={{ vertical: "top", horizontal: "right" }}
+    transformOrigin={{ vertical: "top", horizontal: "right" }}
+  >
+    <MenuItem onClick={handleClose}>Perfil</MenuItem>
+    <MenuItem onClick={handleClose}>Ajustes</MenuItem>
+    <MenuItem
+      onClick={() => {
+        logout();
+        setUsuario(null);
+        handleClose();
+      }}
+    >
+      Cerrar sesión
+    </MenuItem>
+  </Menu>
+</div>
+
 </div> 
       {/* Dibujamos el tablero */}
       <Tablero user={usuario} />

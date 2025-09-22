@@ -10,12 +10,17 @@ import Typography from "@mui/material/Typography";
 //Importaciones para FireStore 🔥🔥🔥🔥🔥
 import { collection, addDoc, Timestamp, where, getDocs, query } from "firebase/firestore";
 import { db } from "../firebase";
+import "./Tablero.css"
+
+//Importaciones de imagenes 
+import logoUtm from "../assets/UTM.png"
 
 // Tipos
 interface TABLERO {
   user: any; 
 }
 
+//Molde del como debe de lucir el objeto de lecturas
 interface Lectura {
   timestamp: Timestamp;
   id: string;
@@ -24,8 +29,11 @@ interface Lectura {
 }
 
 const Tablero: React.FC<TABLERO> = ({ user }) => {
+const [sensorActivo, setSensorActivo] = useState("PM25");
 const [lecturas, setLecturas] = useState<Lectura[]>([]);
 const [fechaSeleccionada, setFechaSeleccionada] = useState<Date | null > (null);
+
+const lecturasFiltradas = lecturas.filter((l) => l.sensor === sensorActivo);
 
 
 //Consultar por fecha 2.-
@@ -77,10 +85,13 @@ async function getLecturasPorDia (fecha: Date){
     //Funcion Asincronada (puede hacer coas que tardan en completarse)
     const fetchData = async () => {
       try {
-        /* Con await, esperamos a que sea conectado el esp32 */
-        const res = await fetch("http://192.168.1.97/data-json"); 
-        //Convertimos los datos en un objeto JavaScript (Json)
-        const data = await res.json();
+        const sensores = ["PM2.5", "Temperatura", "Humedad", "CO2"];
+
+        const data = {
+          sensor: sensores[Math.floor(Math.random()*sensores.length)],
+          pm25: Math.floor(Math.random()*100),
+        }
+
         // Adaptamos el JSON a la interfaz Lectura[]
         //Creamos Una instancia del objeto "lectura"
         const nuevaLectura: Lectura = {
@@ -97,11 +108,9 @@ async function getLecturasPorDia (fecha: Date){
     };
 
     // Llamamos cada 5 segundos
-    const interval = setInterval(fetchData, 20000);
+    const interval = setInterval(fetchData, 90000);
     return () => clearInterval(interval);
   }, []);
-
-//UsEffect para traer Datos y almacenarlos en fireStore
 
 return (
   //Div principal.
@@ -113,7 +122,7 @@ return (
         borderRadius: "20px",
         background: "rgba(255, 255, 255, 0.15)",
         backdropFilter: "blur(12px)",
-        border: "3px solid rgba(0, 0, 0, 0.3)",
+        border: "3px solid black",
         color: "white",
         textAlign: "center",
       }}
@@ -121,16 +130,35 @@ return (
       <h2 style={{ marginBottom: "10px", color:"black", fontWeight:700 }}>
        Sistema de Medición de Calidad del Aire 
       </h2>
-      <p style={{ fontSize: "16px", lineHeight: "1.5", color:"black" }}>
+      <p style={{ fontSize: "16px", lineHeight: "1.5", color:"black", }}>
         Este experimento tiene como objetivo medir la concentración de partículas 
-        en el aire utilizando sensores conectados a un ESP32.  
+        en el aire utilizando sensores conectados a un ESP32. Se Realizo con la intencion de medir la calidad del aire en ciertas parte
+        de la Univesidad Tecnologica de Morelia {" "}
+        <img src={logoUtm}alt="Logo de la Utm"
+        style={{width: "50px", /* ancho */ height:"25px", /* alto */ verticalAlign: "middle", /* alineacion Vertical  */margin:" 0 5px" /* le da respiracion al texto */}} />
         Los datos recolectados son procesados en tiempo real y se muestran en este tablero.
       </p>
     </div>
 
     {/* Consultar por fecha 1.- */}
     <div>
-      <h2>Historial de Lecturas</h2>
+      <div
+      style={{
+        borderRadius: "10px",
+        background: "rgba(255, 255, 255, 0.15)",
+        backdropFilter: "blur(12px)",
+        border: "3px solid black",
+        color: "#110b3b",
+        textAlign: "left",
+      }}
+      >
+      <h2> Historial de Lecturas</h2>
+      <div style={{display:"flex", /* para que sea flexible */ gap:"10px", /* espacio entre los elementos  */marginBottom:"20px" /* margen inferior */}}>
+      <button onClick={()=> setSensorActivo("PM2.5")}>PM2.5</button>
+      <button onClick={()=> setSensorActivo("CO2")}>CO2</button>
+      <button onClick={()=> setSensorActivo("Temperatura")}>Temperatura</button>
+      </div>
+      </div>
       <input type="date"
         onChange={(e) => {
           const value = e.target.value; // "2025-09-14"
@@ -141,10 +169,18 @@ return (
       />
       <button onClick={buscarPorFecha}>Buscar</button>
       |{/* Resultados */}
-      <ul>
+      <ul
+      style={{
+        backdropFilter: "blur(10px)",
+        border: "3px solid black",
+        borderRadius: "10px",
+        fontWeight: 750,
+        color: "black"
+      }}
+      >
         {lecturas.map((l) => (
           <li key={l.id}>
-            {l.sensor} =&rbrace; {l.valor} ({l.timestamp.toDate().toLocaleString()})
+            {l.sensor} → {l.valor} ({l.timestamp.toDate().toLocaleString()})
           </li>
         ))}
       </ul>
@@ -163,7 +199,8 @@ return (
           padding: "10px",
         }}
       >
-        {lecturas.map((l) => (
+        {/* Inicio de Expresion JavaScript 🟨⬛*/}
+        {lecturasFiltradas.map((l) => (
           <Card
             key={l.id}
             sx={{
@@ -172,7 +209,7 @@ return (
               boxShadow: 3,
               background: "rgba(255, 255, 255, 0.15)",
               backdropFilter: "blur(10px)",
-              border: "1px solid rgba(255,255,255,0.3)",
+              border: "1px solid black",
             }}
           > 
             <CardHeader title={l.sensor} sx={{ color: "#000000ff" }} />
@@ -190,7 +227,6 @@ return (
     )}
   </div>
 );
-
 };
 
 export default Tablero;
