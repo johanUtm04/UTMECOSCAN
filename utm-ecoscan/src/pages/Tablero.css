@@ -193,3 +193,45 @@
 .buttonTemp:active:after {
   background: #E64A19;
 }
+
+/* Filtro de fecha y barra de busqueda */
+/* Input de fecha */
+.date-input {
+  padding: 0.5em 1em;
+  font-size: 1em;
+  border-radius: 0.5em;
+  border: 2px solid #88a2f6;
+  background: rgba(255, 255, 255, 0.15);
+  color: #110b3b;
+  backdrop-filter: blur(8px);
+  outline: none;
+  margin-right: 10px;
+  cursor: pointer;
+  transition: border 300ms, box-shadow 300ms;
+}
+
+.date-input:hover {
+  border-color: #1de4f7;
+  box-shadow: 0 0 10px rgba(29, 228, 247, 0.5);
+}
+
+/* Botón Buscar */
+.button-search {
+  all: unset;
+  display: inline-block;
+  padding: 0.6em 1.5em;
+  border: 2px solid #88a2f6;
+  border-radius: 0.5em;
+  color: #88a2f6;
+  font-weight: 600;
+  cursor: pointer;
+  text-align: center;
+  transition: background 300ms, color 300ms, box-shadow 300ms;
+}
+
+.button-search:hover {
+  background: #88a2f6;
+  color: white;
+  box-shadow: 0 0 10px rgba(136, 162, 246, 0.6);
+}
+

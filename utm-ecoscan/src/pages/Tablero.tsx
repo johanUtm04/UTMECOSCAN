@@ -15,6 +15,10 @@ import "./Tablero.css"
 //Importaciones de imagenes 
 import logoUtm from "../assets/UTM.png"
 
+//Importaciones de Componentes --Reutilizables
+import GraficaSensor from "../components/GraficaSensor";
+
+
 // Tipos
 interface TABLERO {
   user: any; 
@@ -81,17 +85,15 @@ async function getLecturasPorDia (fecha: Date){
   return resultados;
 };
 
+//Use Effect Johan --
    useEffect(() => {
     //Funcion Asincronada (puede hacer coas que tardan en completarse)
-    const fetchData = async () => {
-      try {
-        const sensores = ["PM2.5", "Temperatura", "Humedad", "CO2"];
-
-        const data = {
-          sensor: sensores[Math.floor(Math.random()*sensores.length)],
-          pm25: Math.floor(Math.random()*100),
-        }
-
+        const fetchData = async () => {
+        try {
+        /* Con await, esperamos a que sea conectado el esp32 */
+        const res = await fetch("http://192.168.1.97/data-json"); 
+        //Convertimos los datos en un objeto JavaScript (Json)
+        const data = await res.json();
         // Adaptamos el JSON a la interfaz Lectura[]
         //Creamos Una instancia del objeto "lectura"
         const nuevaLectura: Lectura = {
@@ -102,15 +104,61 @@ async function getLecturasPorDia (fecha: Date){
         };
         //Ir encadenando lecturas una atras de otra
         setLecturas((prev) => [...prev, nuevaLectura]); 
+      await addDoc(collection(db,"lecturas"),{
+        sensor: data.sensor, 
+        valor: data.pm25,
+        timestamp: nuevaLectura.timestamp,
+        salon: "Salon A10",
+        userId: user?.uid,
+      }); 
       } catch (err) {
         console.error("Error al obtener datos:", err);
       }
     };
-
     // Llamamos cada 5 segundos
-    const interval = setInterval(fetchData, 90000);
+    const interval = setInterval(fetchData, 3000);
     return () => clearInterval(interval);
   }, []);
+
+
+  //Use Effect Axel --
+  useEffect(()=>{
+    const fetchData = async () =>{
+      try {
+        //Constante para conectarnos a la url del esp32
+        const conexion = await fetch ("http://192.168.1.97/data-json");
+        const dataBM280 = await conexion.json();
+
+        const nuevaLecturaBM280: Lectura  ={
+          timestamp: Timestamp.now(),
+          id: Date.now().toString(),
+          sensor: dataBM280.sensor,
+          valor: dataBM280.temperature,
+        };
+
+        //Ir encadenanado Lecturas
+        setLecturas(
+          (prev) => [...prev, nuevaLecturaBM280]
+        );
+
+        //Agregar Lecturas a la coleccion:
+        await addDoc(collection(db, "lecturasBM280"),{
+          //Campos de la coleccion
+          sensor: dataBM280.sensor,
+          valor: dataBM280.temperature,
+          Timestamp: nuevaLecturaBM280.timestamp,
+          Lugar: "Morelia",
+          userID: user?.uid,
+        });
+      } catch (error) {
+        console.log("ocurrio un error caballero, es el siguiente: ", error);
+      }
+    };
+    //Llamamos useEffect cada 5 segundos
+    const interval = setInterval(fetchData, 3000);
+    return () => clearInterval(interval);
+  },[])
+
 
 return (
   //Div principal.
@@ -127,10 +175,9 @@ return (
         textAlign: "center",
       }}
     >
-      <h2 style={{ marginBottom: "10px", color:"black", fontWeight:700 }}>
-       Sistema de Medición de Calidad del Aire 
+      <h2 style={{ marginBottom: "10px", color:"white", fontWeight:700 }}>Sistema de Medición de Calidad del Aire 
       </h2>
-      <p style={{ fontSize: "16px", lineHeight: "1.5", color:"black", }}>
+      <p style={{ fontSize: "16px", lineHeight: "1.5", color:"white", }}>
         Este experimento tiene como objetivo medir la concentración de partículas 
         en el aire utilizando sensores conectados a un ESP32. Se Realizo con la intencion de medir la calidad del aire en ciertas parte
         de la Univesidad Tecnologica de Morelia {" "}
@@ -148,18 +195,25 @@ return (
         background: "rgba(255, 255, 255, 0.15)",
         backdropFilter: "blur(12px)",
         border: "3px solid black",
-        color: "#110b3b",
-        textAlign: "left",
+        color: "#ffffffff",
+        textAlign: "center",
       }}
       >
       <h2> Historial de Lecturas</h2>
-      <div style={{display:"flex", /* para que sea flexible */ gap:"10px", /* espacio entre los elementos  */marginBottom:"20px" /* margen inferior */}}>
-      <button className="buttonPM" onClick={()=> setSensorActivo("PM2.5")}>PM2.5</button>
-      <button className="buttonCO2" onClick={()=> setSensorActivo("CO2")}>CO2</button>
-      <button className="buttonTemp" onClick={()=> setSensorActivo("Temperatura")}>Temperatura</button>
+      <div style={{justifyContent:"center", display:"flex", /* para que sea flexible */ gap:"10px", /* espacio entre los elementos  */marginBottom:"20px" /* margen inferior */}}>
+      <button className="buttonPM" onClick={()=> {
+        console.log("Boton de Johan Presionado")
+        setSensorActivo("PM2.5")}}>PM2.5</button>
+      <button className="buttonCO2" onClick={()=>{
+        console.log("Boton de Axel Antonio Presionado")
+        setSensorActivo("CO2")}}>CO2</button>
+      <button className="buttonTemp" onClick={()=>{
+        console.log("Boton de Axel Gabriel Presionado")
+        setSensorActivo("Temperatura")}}>Temperatura</button>
       </div>
       </div>
       <input type="date"
+        className="date-input"
         onChange={(e) => {
           const value = e.target.value; // "2025-09-14"
           const [year, month, day] = value.split("-").map(Number);
@@ -167,7 +221,8 @@ return (
           setFechaSeleccionada(new Date(year, month - 1, day));
         }}
       />
-      <button onClick={buscarPorFecha}>Buscar</button>
+      <button className="button-search" onClick={buscarPorFecha}>Buscar
+      </button>
       |{/* Resultados */}
       <ul
       style={{
@@ -185,22 +240,16 @@ return (
         ))}
       </ul>
     </div>
-
+    {/* En casi de no haber lecturas mostrar este mensaje */}
     {lecturas.length === 0 ? (
-      <Typography variant="h4" color="#000000ff" fontWeight={600}>
+      <Typography variant="h4" color="#ffffffff" fontWeight={600}>
         No hay datos aún.
       </Typography>
-    ) : (
-      <div
-        style={{
-          display: "flex",
-          flexWrap: "wrap",
-          gap: "15px",
-          padding: "10px",
-        }}
-      >
+    ) : /* en caso de que SI hay datos mostrar esto: */ (
+      <div style={{ display: "flex", flexWrap: "wrap", gap: "15px", padding: "10px",}}>
         {/* Inicio de Expresion JavaScript 🟨⬛*/}
         {lecturasFiltradas.map((l) => (
+          /* Grafica */
           <Card
             key={l.id}
             sx={{
@@ -212,6 +261,16 @@ return (
               border: "1px solid black",
             }}
           > 
+          <div style={{marginTop:"20px", background:"white", padding: "10px", borderRadius: "10px"}}>
+          <h3 style={{textAlign:"center",}}> {sensorActivo} - Evolucion</h3>
+          <GraficaSensor
+            datos={lecturasFiltradas.map(l => ({
+              timestamp: l.timestamp.toDate(), 
+              valor: l.valor
+            }))}
+            sensor={sensorActivo}
+          />
+          </div>
             <CardHeader title={l.sensor} sx={{ color: "#000000ff" }} />
             <CardContent>
               <Typography variant="h5" sx={{ color: "#000000ff" }}>

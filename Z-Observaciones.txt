@@ -283,44 +283,228 @@ export default Tablero;
 
 
 Codigo de Tablero que si funciona: ✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨
--lectura en tiempo Real, darle formato
 
 
-<!-- HTML !-->
-<button class="button-89" role="button">Button 89</button>
+Codigo Axel Versión1🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑:
 
-/* CSS */
-.button-89 {
-  --b: 3px;   /* border thickness */
-  --s: .45em; /* size of the corner */
-  --color: #373B44;
-  
-  padding: calc(.5em + var(--s)) calc(.9em + var(--s));
-  color: var(--color);
-  --_p: var(--s);
-  background:
-    conic-gradient(from 90deg at var(--b) var(--b),#0000 90deg,var(--color) 0)
-    var(--_p) var(--_p)/calc(100% - var(--b) - 2*var(--_p)) calc(100% - var(--b) - 2*var(--_p));
-  transition: .3s linear, color 0s, background-color 0s;
-  outline: var(--b) solid #0000;
-  outline-offset: .6em;
-  font-size: 16px;
+#include <Wire.h>
+#include <WiFi.h>
+#include <WebServer.h>
+#include <Adafruit_Sensor.h>
+#include <Adafruit_BME280.h>
 
-  border: 0;
+// --- Configuración Wi-Fi ---
+const char* ssid = "INFINITUM7BB2";   // tu red WiFi
+const char* password = "wvdK4gYDpW";  // tu contraseña
 
-  user-select: none;
-  -webkit-user-select: none;
-  touch-action: manipulation;
+// --- Servidor Web ---
+  //WebServer es una clase (objeto) de la libreria "WebServer"
+WebServer server(80); //Trabajaremos en el puerto 80
+
+// --- BME280 ---
+Adafruit_BME280 bme;  // objeto sensor
+#define SEALEVELPRESSURE_HPA (1013.25) // presión nivel del mar
+
+// --- Función que devuelve datos en JSON ---
+  //void -> la funcion no devuelve nada ni recibe parametros ()
+    //Nombre de la funcion
+void handleDataJSON() {
+  //server->Nuestro objeto servidor
+    //.sendHeader -> envia una cabecera HTTP
+      //Permite peticiones desde cualquier origen
+  server.sendHeader("Access-Control-Allow-Origin", "*"); // CORS libre
+  //String es un tipo de variable para manejar texto dinamico
+    //json es nombre de la variable 
+      //Empieza el Json con un llave
+  String json = "{";
+  //Lineas que van ir  construyendo el Json ⏺
+    // += Agrega texto al string json
+    //\"sensor\" esto es como escribir "sensor" (las comillas se escapan con \)
+    //: en json significa clave-valor
+    //BME280 es el valor que tendra sensor
+  json += "\"sensor\":\"BME280\",";
+    //bme.raedtEMPERATURE() este llama al sensor y devuelve un numero flotante(°C)
+      //String(...) convierte ese numero en texto
+  json += "\"temperature\":" + String(bme.readTemperature()) + ",";
+    //llama al sensr pero para humedad
+  json += "\"humidity\":" + String(bme.readHumidity()) + ",";
+    //llama al sensor pero presion, en pascales y a su ves a hectopascales
+  json += "\"pressure\":" + String(bme.readPressure() / 100.0F) + ",";
+    //Lo mismo que las anteriores pero calcula la altitud aproximada usando la presión actual y la de referencia
+  json += "\"altitude\":" + String(bme.readAltitude(SEALEVELPRESSURE_HPA));
+  json += "}"; //cierre del json
+  //Envia respuesta http, con el tipo de contenido que es json
+  server.send(200, "application/json", json);
 }
 
-.button-89:hover,
-.button-89:focus-visible{
-  --_p: 0px;
-  outline-color: var(--color);
-  outline-offset: .05em;
+//Setup (Funcion que solo arranca una vez)
+void setup() {
+  //Inicia la comunicacion serial con la pc, a una velocidad de 115200
+  Serial.begin(115200);
+  //espera un milisegundo
+  delay(1000);
+
+  // --- Conexión Wi-Fi ---
+  WiFi.begin(ssid, password); //Conectar con credenciales 
+  Serial.println("Conectando a WiFi..."); //Escribe en la pantalla serial
+  //Mientras no estemos conectaods al wifi, se repite el codigo de las llaves
+  while (WiFi.status() != WL_CONNECTED) {
+    delay(500);
+    Serial.print(".");
+  }
+  //Una Vez esta conectado, nos muestra en pantalla esto:
+  Serial.println("\nWiFi conectado!");
+  Serial.print("IP del ESP32: "); Serial.println(WiFi.localIP());
+
+  // --- Inicializar BME280 ---
+  //Wire se encarga de manejar la comunicación I2C (bus de 2 cables)
+  Wire.begin(19, 18); //SDA = 19, SCL = 18
+if (!bme.begin(0x76, &Wire)) {  
+  if (!bme.begin(0x77, &Wire)) {
+    Serial.println("No se encontró el BME280 en 0x76 ni 0x77");
+    while (1);
+  }
 }
 
-.button-89:active {
-  background: var(--color);
-  color: #fff;
+//Mostramos en pantalla si se conecta correctamente el sig msj
+  Serial.println("BME280 inicializado correctamente");
+
+  // --- Configurar servidor ---
+  server.on("/data-json", handleDataJSON); //Ruta donde se inicia esta función 
+  server.begin(); //Arranca el servidor
+  Serial.println("Servidor web iniciado en puerto 80"); //Imprime en el monitor serie el msj
 }
+
+//Funcion que no devuelve nada y esta en loop
+void loop() {
+  server.handleClient(); // Revisa si alguien entro al servidor
+  // Muestra datos en Serial cada segundo (debug)
+  Serial.print("Temp: "); Serial.print(bme.readTemperature()); Serial.print(" °C, ");
+  Serial.print("Hum: "); Serial.print(bme.readHumidity()); Serial.print(" %, ");
+  Serial.print("Presión: "); Serial.print(bme.readPressure() / 100.0F); Serial.println(" hPa");
+  delay(1000);
+}
+Codigo Axel Versión1🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑:
+
+
+
+Codigo de Johan 🚸🚸🚸🚸🚸🚸🚸🚸🚸🚸🚸🚸🚸🚸🚸🚸🚸🚸🚸🚸🚸
+#include <WiFi.h>
+#include <WebServer.h>
+#include <HardwareSerial.h>
+
+// --- Wi-Fi ---
+const char* ssid = "INFINITUM7BB2";
+const char* password = "wvdK4gYDpW";
+
+// --- Servidor web ---
+WebServer server(80);
+
+// --- PMS5003 ---
+HardwareSerial pmsSerial(1);
+#define PMS_RX 44
+#define PMS_TX 43
+
+struct pms5003data {
+  uint16_t framelen;
+  uint16_t pm10_standard, pm25_standard, pm100_standard;
+  uint16_t pm10_env, pm25_env, pm100_env;
+  uint16_t particles_03um, particles_05um, particles_10um, particles_25um, particles_50um, particles_100um;
+  uint16_t unused;
+  uint16_t checksum;
+};
+
+struct pms5003data data;
+
+// --- Función que devuelve datos en JSON ---
+void handleDataJSON() {
+  server.sendHeader("Access-Control-Allow-Origin", "*");
+  String json = "{";
+  json += "\"sensor\":\"PMS5003\",";
+  json += "\"pm25\":" + String(data.pm25_standard) + ",";
+  json += "\"pm10\":" + String(data.pm100_standard) + ",";
+  json += "\"particles_03um\":" + String(data.particles_03um) + ",";
+  json += "\"particles_05um\":" + String(data.particles_05um) + ",";
+  json += "\"particles_10um\":" + String(data.particles_10um) + ",";
+  json += "\"particles_25um\":" + String(data.particles_25um) + ",";
+  json += "\"particles_50um\":" + String(data.particles_50um) + ",";
+  json += "\"particles_100um\":" + String(data.particles_100um);
+  json += "}";
+  server.send(200, "application/json", json);
+}
+
+void setup() {
+  Serial.begin(115200);
+  delay(1000);
+
+  // Conectar Wi-Fi
+  WiFi.begin(ssid, password);
+  Serial.println("Conectando a Wi-Fi...");
+  while (WiFi.status() != WL_CONNECTED) {
+    delay(500);
+    Serial.print(".");
+  }
+  Serial.println("\nConectado!");
+  Serial.print("IP asignada: "); Serial.println(WiFi.localIP());
+
+  // Configurar servidor
+  server.on("/data-json", handleDataJSON);
+  server.begin();
+  Serial.println("Servidor web iniciado");
+
+  // Inicializar PMS5003
+  pmsSerial.begin(9600, SERIAL_8N1, PMS_RX, PMS_TX);
+  Serial.println("Esperando datos del PMS5003...");
+}
+
+void loop() {
+  server.handleClient(); // Atiende solicitudes web
+
+  // Leer PMS5003
+  if (readPMSdata(&pmsSerial)) {
+    Serial.print("\rPM2.5: "); Serial.print(data.pm25_standard);
+    Serial.print("  PM10: "); Serial.print(data.pm100_standard);
+    Serial.print("  Part >0.3um: "); Serial.print(data.particles_03um);
+    Serial.print("  Part >0.5um: "); Serial.print(data.particles_05um);
+    Serial.print("  Part >1.0um: "); Serial.print(data.particles_10um);
+    Serial.print("  Part >2.5um: "); Serial.print(data.particles_25um);
+    Serial.print("  Part >5.0um: "); Serial.print(data.particles_50um);
+    Serial.print("  Part >10um: "); Serial.print(data.particles_100um);
+  }
+
+  delay(1000);
+}
+
+// --- Función de lectura PMS5003 ---
+boolean readPMSdata(Stream *s) {
+  if (!s->available()) return false;
+  if (s->peek() != 0x42) { s->read(); return false; }
+  if (s->available() < 32) return false;
+
+  uint8_t buffer[32];
+  uint16_t sum = 0;
+  s->readBytes(buffer, 32);
+
+  for (uint8_t i = 0; i < 30; i++) sum += buffer[i];
+
+  uint16_t buffer_u16[15];
+  for (uint8_t i = 0; i < 15; i++) {
+    buffer_u16[i] = buffer[2 + i*2 + 1];
+    buffer_u16[i] += (buffer[2 + i*2] << 8);
+  }
+
+  memcpy((void *)&data, (void *)buffer_u16, 30);
+
+  if (sum != data.checksum) {
+    Serial.println("Checksum failure");
+    return false;
+  }
+
+  return true;
+}
+Codigo de Johan 🚸🚸🚸🚸🚸🚸🚸🚸🚸🚸🚸🚸🚸🚸🚸🚸🚸🚸🚸🚸🚸
+
+
+Treas Pendientes...
+UseEffect Sensor de Temperatura... ✔
+Alternar Entre UsEffects y botones para mostrar Tarjetas ...
