@@ -33,12 +33,10 @@ interface Lectura {
 }
 
 const Tablero: React.FC<TABLERO> = ({ user }) => {
-const [sensorActivo, setSensorActivo] = useState("PM25");
+const [sensorActivo, setSensorActivo] = useState("");
 const [lecturas, setLecturas] = useState<Lectura[]>([]);
 const [fechaSeleccionada, setFechaSeleccionada] = useState<Date | null > (null);
-
 const lecturasFiltradas = lecturas.filter((l) => l.sensor === sensorActivo);
-
 
 //Consultar por fecha 2.-
 const buscarPorFecha = async () => {
@@ -84,80 +82,113 @@ async function getLecturasPorDia (fecha: Date){
   })
   return resultados;
 };
+//Use Effect Con 4 posibilidades
+/* 1.-Boton de Simulacion, en caso de no tener un Sensor Conectado
+2.-useEffect para particulas pm2.5 (johan)
+3.-useEffect para C02 (Axel Antonio)
+4.-useEffect para temperatura(Axel Gabo) */
 
-//Use Effect Johan --
-   useEffect(() => {
-    //Funcion Asincronada (puede hacer coas que tardan en completarse)
-        const fetchData = async () => {
-        try {
-        /* Con await, esperamos a que sea conectado el esp32 */
-        const res = await fetch("http://192.168.1.97/data-json"); 
-        //Convertimos los datos en un objeto JavaScript (Json)
+useEffect(() => {
+  if (!sensorActivo) {
+    console.log("el sensor está vacío, no voy a hacer nada 🚫");
+    return;
+  }
+
+  let intervalId: NodeJS.Timeout;
+
+  const iniciarLectura = () => {
+    if (sensorActivo === "simulacion") {
+      intervalId = setInterval(async () => {
+        console.log("📡 leyendo Datos Simulados...");
+
+        const sensores = ["PM2.5", "Temperatura", "CO2"];
+        const dataSimulada = {
+          sensor: sensores[Math.floor(Math.random() * sensores.length)],
+          valor: Math.floor(Math.random() * 100),
+        };
+
+        const nuevaLectura: Lectura = {
+          timestamp: Timestamp.now(),
+          id: Date.now().toString(),
+          sensor: dataSimulada.sensor,
+          valor: dataSimulada.valor,
+        };
+
+        setLecturas((estadoAnterior) => [...estadoAnterior, nuevaLectura]);
+
+        await addDoc(collection(db, "lecturas-Fake"), {
+          sensor: dataSimulada.sensor,
+          valor: dataSimulada.valor,
+          timestamp: nuevaLectura.timestamp,
+          salon: "Aula 1",
+          userId: user?.uid,
+        });
+      }, 2000);
+    }
+
+    else if (sensorActivo === "PM2.5") {
+      intervalId = setInterval(async () => {
+        console.log("📡 leyendo sensor de partículas (PM2.5)...");
+
+        const res = await fetch("http://192.168.1.97/data-json");
         const data = await res.json();
-        // Adaptamos el JSON a la interfaz Lectura[]
-        //Creamos Una instancia del objeto "lectura"
+
         const nuevaLectura: Lectura = {
           timestamp: Timestamp.now(),
           id: Date.now().toString(),
           sensor: data.sensor,
           valor: data.pm25,
         };
-        //Ir encadenando lecturas una atras de otra
-        setLecturas((prev) => [...prev, nuevaLectura]); 
-      await addDoc(collection(db,"lecturas"),{
-        sensor: data.sensor, 
-        valor: data.pm25,
-        timestamp: nuevaLectura.timestamp,
-        salon: "Salon A10",
-        userId: user?.uid,
-      }); 
-      } catch (err) {
-        console.error("Error al obtener datos:", err);
-      }
-    };
-    // Llamamos cada 5 segundos
-    const interval = setInterval(fetchData, 3000);
-    return () => clearInterval(interval);
-  }, []);
 
+        setLecturas((prev) => [...prev, nuevaLectura]);
 
-  //Use Effect Axel --
-  useEffect(()=>{
-    const fetchData = async () =>{
-      try {
-        //Constante para conectarnos a la url del esp32
-        const conexion = await fetch ("http://192.168.1.97/data-json");
+        await addDoc(collection(db, "lecturas del PM2.5"), {
+          sensor: data.sensor,
+          valor: data.pm25,
+          timestamp: nuevaLectura.timestamp,
+          salon: "Salon A10",
+          userId: user?.uid,
+        });
+      }, 2000);
+    }
+
+    else if (sensorActivo === "Temperatura") {
+      intervalId = setInterval(async () => {
+        console.log("📡 leyendo sensor de Temperatura...");
+
+        const conexion = await fetch("http://192.168.1.97/data-json");
         const dataBM280 = await conexion.json();
 
-        const nuevaLecturaBM280: Lectura  ={
+        const nuevaLecturaBM280: Lectura = {
           timestamp: Timestamp.now(),
           id: Date.now().toString(),
           sensor: dataBM280.sensor,
           valor: dataBM280.temperature,
         };
 
-        //Ir encadenanado Lecturas
-        setLecturas(
-          (prev) => [...prev, nuevaLecturaBM280]
-        );
+        setLecturas((prev) => [...prev, nuevaLecturaBM280]);
 
-        //Agregar Lecturas a la coleccion:
-        await addDoc(collection(db, "lecturasBM280"),{
-          //Campos de la coleccion
+        await addDoc(collection(db, "Lecturas del BM280"), {
           sensor: dataBM280.sensor,
           valor: dataBM280.temperature,
-          Timestamp: nuevaLecturaBM280.timestamp,
+          timestamp: nuevaLecturaBM280.timestamp,
           Lugar: "Morelia",
-          userID: user?.uid,
+          userId: user?.uid,
         });
-      } catch (error) {
-        console.log("ocurrio un error caballero, es el siguiente: ", error);
-      }
-    };
-    //Llamamos useEffect cada 5 segundos
-    const interval = setInterval(fetchData, 3000);
-    return () => clearInterval(interval);
-  },[])
+      }, 2000);
+    }
+  };
+
+  // 👇 Se llama la función
+  iniciarLectura();
+
+  // 🔥 Limpiar cuando cambie de sensor
+  return () => {
+    if (intervalId) clearInterval(intervalId);
+    console.log("Se limpió el sensor anterior ✅");
+  };
+}, [sensorActivo, user]);
+
 
 
 return (
@@ -210,6 +241,9 @@ return (
       <button className="buttonTemp" onClick={()=>{
         console.log("Boton de Axel Gabriel Presionado")
         setSensorActivo("Temperatura")}}>Temperatura</button>
+      <button className="buttonPruebas" onClick={()=>{
+        console.log("Se activaron las Lecturas de Prueba")
+        setSensorActivo("simulacion")}}>Boton Para lectura de Prueba</button>
       </div>
       </div>
       <input type="date"

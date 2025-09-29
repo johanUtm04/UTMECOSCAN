@@ -235,3 +235,67 @@
   box-shadow: 0 0 10px rgba(136, 162, 246, 0.6);
 }
 
+/* Boton Lectuaras De Prueba */
+.buttonPruebas {
+  all: unset;
+  display: flex;
+  align-items: center;
+  position: relative;
+  padding: 0.6em 2em;
+  border: #ff00d4 solid 0.15em; 
+  border-radius: 0.25em;
+  color: #ff00d4; 
+  font-size: 1.5em;
+  font-weight: 600;
+  cursor: pointer;
+  overflow: hidden;
+  transition: border 300ms, color 300ms;
+  user-select: none;
+}
+
+.buttonPruebas p {
+  z-index: 1;
+}
+
+.buttonPruebas:hover {
+  color: #ffffff;
+  font-weight: 700;
+}
+
+.buttonPruebas:active {
+  border-color: #ff00d4; 
+}
+
+.buttonPruebas::after, .buttonPruebas::before {
+  content: "";
+  position: absolute;
+  width: 9em;
+  aspect-ratio: 1;
+  background: #ff00d4;
+  opacity: 50%;
+  border-radius: 50%;
+  transition: transform 500ms, background 300ms;
+}
+
+.buttonPruebas::before {
+  left: 0;
+  transform: translateX(-8em);
+}
+
+.buttonPruebas::after {
+  right: 0;
+  transform: translateX(8em);
+}
+
+.buttonPruebas:hover:before {
+  transform: translateX(-1em);
+}
+
+.buttonPruebas:hover:after {
+  transform: translateX(1em);
+}
+
+.buttonPruebas:active:before,
+.buttonPruebas:active:after {
+  background: #ff00d4;
+}

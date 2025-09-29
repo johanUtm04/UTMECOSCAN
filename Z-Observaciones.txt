@@ -44,11 +44,12 @@ Efecto de prueba, en caso de no tener el Sensor...
 probar Tablero
 const [lecturas, setLecturas] = useState<Lectura[]>([]);
 
+//UseEffect de Prueba(en caso de no tener disponibilidad de conectar algun sensor) 🥵🥵🥵🥵🥵🥵🥵🥵🥵🥵🥵🥵
 useEffect(() => {
   const fetchData = async () => {
     try {
       // Lista de sensores de ejemplo
-      const sensores = ["PM2.5", "Temperatura", "Humedad", "CO2"];
+      const sensores = ["PM2.5", "Temperatura","CO2"];
 
       // Generamos un sensor aleatorio
       const data = {
@@ -58,6 +59,7 @@ useEffect(() => {
 
       // Creamos un objeto nuevaLectura siguiendo la interfaz Lectura
       const nuevaLectura: Lectura = {
+        timestamp: Timestamp.now(),
         id: Date.now().toString(), // id único
         sensor: data.sensor,
         valor: data.pm25,
@@ -67,21 +69,23 @@ useEffect(() => {
       setLecturas((estadoAnterior) => [...estadoAnterior, nuevaLectura]);
 
       //Nuevo paso: 🔥
-      await addDoc(collection(db, "lecturas")){
-      sensor: data.sensor
-      valor: timestamp
-      salon: "Aula 1"
-      userId: user?.uid, })
+      await addDoc(collection(db, "lecturas-Fake"),{
+      sensor: data.sensor,
+      valor: data.pm25,
+      timestamp: nuevaLectura.timestamp,
+      salon: "Aula 1",
+      userId: user?.uid, });
 
     } catch (err) {
       console.error("Error al generar datos:", err);
     }
   };
-
   // Llamamos cada 5 segundos para simular lecturas continuas
   const interval = setInterval(fetchData, 5000);
   return () => clearInterval(interval);
 }, []);
+//UseEffect de Prueba(en caso de no tener disponibilidad de conectar algun sensor) 🥵🥵🥵🥵🥵🥵🥵🥵🥵🥵🥵🥵
+
 
 Codigo de Tablero que si funciona: ✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨
  // React
@@ -282,10 +286,10 @@ return (
 export default Tablero;
 
 
-Codigo de Tablero que si funciona: ✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨
+Codigo de Tablero que si funciona(es una respaldo antiguo): ✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨
 
 
-Codigo Axel Versión1🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑:
+Codigo Axel Versión1 (Arduino)🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑:
 
 #include <Wire.h>
 #include <WiFi.h>
@@ -322,7 +326,7 @@ void handleDataJSON() {
     //\"sensor\" esto es como escribir "sensor" (las comillas se escapan con \)
     //: en json significa clave-valor
     //BME280 es el valor que tendra sensor
-  json += "\"sensor\":\"BME280\",";
+  json += "\"sensor\":\"BME280 (Temperatura°)\",";
     //bme.raedtEMPERATURE() este llama al sensor y devuelve un numero flotante(°C)
       //String(...) convierte ese numero en texto
   json += "\"temperature\":" + String(bme.readTemperature()) + ",";
@@ -384,11 +388,11 @@ void loop() {
   Serial.print("Presión: "); Serial.print(bme.readPressure() / 100.0F); Serial.println(" hPa");
   delay(1000);
 }
-Codigo Axel Versión1🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑:
+Codigo Axel Versión1 (Arduino)🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑:
 
 
 
-Codigo de Johan 🚸🚸🚸🚸🚸🚸🚸🚸🚸🚸🚸🚸🚸🚸🚸🚸🚸🚸🚸🚸🚸
+Codigo de Johan (Arduino)🚸🚸🚸🚸🚸🚸🚸🚸🚸🚸🚸🚸🚸🚸🚸🚸🚸🚸🚸🚸🚸
 #include <WiFi.h>
 #include <WebServer.h>
 #include <HardwareSerial.h>
@@ -502,9 +506,92 @@ boolean readPMSdata(Stream *s) {
 
   return true;
 }
-Codigo de Johan 🚸🚸🚸🚸🚸🚸🚸🚸🚸🚸🚸🚸🚸🚸🚸🚸🚸🚸🚸🚸🚸
+Codigo de Johan (Arduino)🚸🚸🚸🚸🚸🚸🚸🚸🚸🚸🚸🚸🚸🚸🚸🚸🚸🚸🚸🚸🚸
 
 
-Treas Pendientes...
+UseEffect para sensores 🔥😈🔥😈🔥😈🔥🔥😈🔥😈🔥😈🔥🔥😈🔥😈🔥😈🔥
+
+//Use Effect Johan ----
+   useEffect(() => {
+    //Funcion Asincronada (puede hacer coas que tardan en completarse)
+        const fetchData = async () => {
+        try {
+        /* Con await, esperamos a que sea conectado el esp32 */
+        const res = await fetch("http://192.168.1.97/data-json"); 
+        //Convertimos los datos en un objeto JavaScript (Json)
+        const data = await res.json();
+        // Adaptamos el JSON a la interfaz Lectura[]
+        //Creamos Una instancia del objeto "lectura"
+        const nuevaLectura: Lectura = {
+          timestamp: Timestamp.now(),
+          id: Date.now().toString(),
+          sensor: data.sensor,
+          valor: data.pm25,
+        };
+        //Ir encadenando lecturas una atras de otra
+        setLecturas((prev) => [...prev, nuevaLectura]); 
+        await addDoc(collection(db,"lecturas"),{
+        sensor: data.sensor, 
+        valor: data.pm25,
+        timestamp: nuevaLectura.timestamp,
+        salon: "Salon A10",
+        userId: user?.uid,
+      }); 
+      } catch (err) {
+        console.error("Error al obtener datos:", err);
+      }
+    };
+    // Llamamos cada 5 segundos
+    const interval = setInterval(fetchData, 3000);
+    return () => clearInterval(interval);
+  }, []);
+
+
+  //Use Effect Axel ----
+  useEffect(()=>{
+    const fetchData = async () =>{
+      try {
+        //Constante para conectarnos a la url del esp32
+        const conexion = await fetch ("http://192.168.1.97/data-json");
+        const dataBM280 = await conexion.json();
+
+        const nuevaLecturaBM280: Lectura  ={
+          timestamp: Timestamp.now(),
+          id: Date.now().toString(),
+          sensor: dataBM280.sensor,
+          valor: dataBM280.temperature,
+        };
+
+        //Ir encadenanado Lecturas
+        setLecturas(
+          (prev) => [...prev, nuevaLecturaBM280]
+        );
+
+        //Agregar Lecturas a la coleccion:
+        await addDoc(collection(db, "lecturasBM280"),{
+          //Campos de la coleccion
+          sensor: dataBM280.sensor,
+          valor: dataBM280.temperature,
+          Timestamp: nuevaLecturaBM280.timestamp,
+          Lugar: "Morelia",
+          userID: user?.uid,
+        });
+      } catch (error) {
+        console.log("ocurrio un error caballero, es el siguiente: ", error);
+      }
+    };
+    //Llamamos useEffect cada 5 segundos
+    const interval = setInterval(fetchData, 3000);
+    return () => clearInterval(interval);
+  },[])
+
+UseEffect para sensores 🔥😈🔥😈🔥😈🔥🔥😈🔥😈🔥😈🔥🔥😈🔥😈🔥😈🔥
+
+
+Tareas Pendientes...〽〽〽
 UseEffect Sensor de Temperatura... ✔
-Alternar Entre UsEffects y botones para mostrar Tarjetas ...
+Alternar Entre UsEffects y botones para mostrar Tarjetas✔
+Estilizar seccion donde se ven lecturas Nombre del sensor | Lectura y Fecha, es decir barra fea abajo de botones xD...
+Boton de detener lecturas ...
+Cambiar console.log a promps o alerts para que usuario sepa que pasa...
+Refactorizar Codigo...
