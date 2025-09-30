@@ -8,7 +8,7 @@ import Button from '@mui/material/Button';
 import Fondo from './assets/5072612.jpg';
 import { Typography } from "@mui/material";
 import logo from './assets/logo.gif';
-import fondoTablero from "./assets/fondoTablero.jpg";
+import fondoTablero from "./assets/5072612.jpg"
 import "./App.css"
 
 import Menu from "@mui/material/Menu";

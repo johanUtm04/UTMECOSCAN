@@ -299,3 +299,39 @@
 .buttonPruebas:active:after {
   background: #ff00d4;
 }
+
+/*Boton de detenar lecturas*/
+.buttonStop {
+  all: unset;
+  display: inline-block;
+  padding: 0.6em 1.5em;
+  border: 2px solid #88a2f6;
+  border-radius: 0.5em;
+  color: #88a2f6;
+  font-weight: 600;
+  cursor: pointer;
+  text-align: center;
+  transition: background 300ms, color 300ms, box-shadow 300ms;
+}
+
+.buttonStop:hover {
+  background: #88a2f6;
+  color: white;
+  box-shadow: 0 0 10px rgba(136, 162, 246, 0.6);
+}
+
+/* Boton Lectuaras De Prueba */
+.buttonStop {
+  background-color: #e63946; /* rojo */
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.3s ease;
+}
+
+.buttonStop:hover {
+  background-color: #b71c1c; /* rojo más oscuro */
+}

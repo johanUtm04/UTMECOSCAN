@@ -326,7 +326,7 @@ void handleDataJSON() {
     //\"sensor\" esto es como escribir "sensor" (las comillas se escapan con \)
     //: en json significa clave-valor
     //BME280 es el valor que tendra sensor
-  json += "\"sensor\":\"BME280 (Temperatura°)\",";
+  json += "\"sensor\":\"Temperatura\",";
     //bme.raedtEMPERATURE() este llama al sensor y devuelve un numero flotante(°C)
       //String(...) convierte ese numero en texto
   json += "\"temperature\":" + String(bme.readTemperature()) + ",";
@@ -591,7 +591,8 @@ UseEffect para sensores 🔥😈🔥😈🔥😈🔥🔥😈🔥😈🔥😈🔥
 Tareas Pendientes...〽〽〽
 UseEffect Sensor de Temperatura... ✔
 Alternar Entre UsEffects y botones para mostrar Tarjetas✔
-Estilizar seccion donde se ven lecturas Nombre del sensor | Lectura y Fecha, es decir barra fea abajo de botones xD...
-Boton de detener lecturas ...
-Cambiar console.log a promps o alerts para que usuario sepa que pasa...
+Cambiar console.log a promps o alerts para que usuario sepa que pasa...✔
+Boton de detener lecturas ...✔
+Estilizar barra fea abajo de botones xD...✔
 Refactorizar Codigo...
+Botones Tomen Todo el color que les corresponde...
