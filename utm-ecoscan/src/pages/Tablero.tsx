@@ -281,28 +281,55 @@ return (
       <h3 style={{marginBottom:"0.5 rem"}}>Historial de Lecturas</h3>
 
       {/* Tabla */}
-      <table style={{width:"100%", borderCollapse:"collapse"}}>
-      
-      {/* Encabezado de la tabla */}
-      <thead>
-        <tr style={{background:"rgb(0,0,0,0.1)"}}>
-          <th style={{textAlign:"left", padding:"8px"}}>Sensor</th>
-          <th style={{textAlign:"left", padding:"8px"}}>Valor</th>
-          <th style={{textAlign:"left", padding:"8px"}}>Fecha</th>
-        </tr>
-      </thead>
+{/* Tabla */}
+<table style={{ width: "100%", borderCollapse: "collapse" }}>
+  {/* Encabezado de la tabla */}
+  <thead>
+    <tr style={{ background: "rgb(0,0,0,0.1)" }}>
+      <th style={{ textAlign: "left", padding: "8px" }}>Sensor</th>
+      <th style={{ textAlign: "left", padding: "8px" }}>Valor</th>
+      <th style={{ textAlign: "left", padding: "8px" }}>Fecha</th>
+      <th style={{ textAlign: "left", padding: "8px" }}>Calidad</th>
+    </tr>
+  </thead>
 
-      {/* Cuerpo de la tabla (Filas de Datos) */}
-      <tbody>
-        {lecturas.map((l) => (
-          <tr key={l.id} style={{borderBottom:"1px solid black"}}>
-            <td style={{padding: "8px"}}> {l.sensor}</td>
-            <td style={{padding: "8px"}}> {l.valor}</td>
-            <td style={{padding: "8px"}}> {l.timestamp.toDate().toLocaleString()}</td>
-          </tr>
-        ))}
-      </tbody>
-      </table>
+  {/* Cuerpo de la tabla (Filas de Datos) */}
+  <tbody>
+    {lecturas.map((l) => {
+      const valor = l.valor;
+      let estado = "";
+      let color = "";
+
+      // Rango para PM2.5
+      if (l.sensor === "PM2.5") {
+        if (valor <= 12) { estado = "Bueno ✅"; color = "green"; }
+        else if (valor <= 35) { estado = "Aceptable 🙂"; color = "yellow"; }
+        else if (valor <= 55) { estado = "Dañino ⚠️"; color = "orange"; }
+        else if (valor <= 150) { estado = "Peligroso 🚨"; color = "red"; }
+        else { estado = "Muy peligroso ☠️"; color = "darkred"; }
+      }
+
+      // Rango para PM10
+      if (l.sensor === "PM10") {
+        if (valor <= 50) { estado = "Bueno ✅"; color = "green"; }
+        else if (valor <= 100) { estado = "Aceptable 🙂"; color = "yellow"; }
+        else if (valor <= 250) { estado = "Dañino ⚠️"; color = "orange"; }
+        else if (valor <= 350) { estado = "Peligroso 🚨"; color = "red"; }
+        else { estado = "Muy peligroso ☠️"; color = "darkred"; }
+      }
+
+      return (
+        <tr key={l.id} style={{ borderBottom: "1px solid black" }}>
+          <td style={{ padding: "8px" }}>{l.sensor}</td>
+          <td style={{ padding: "8px" }}>{valor} µg/m³</td>
+          <td style={{ padding: "8px" }}>{l.timestamp.toDate().toLocaleString()}</td>
+          <td style={{ padding: "8px", fontWeight: "bold", color }}>{estado}</td>
+        </tr>
+      );
+    })}
+  </tbody>
+</table>
+
       </div>
     </div>
     {/* En casi de no haber lecturas mostrar este mensaje */}

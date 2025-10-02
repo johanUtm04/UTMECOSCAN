@@ -597,6 +597,9 @@ Estilizar barra fea abajo de botones xD...✔
 Refactorizar Codigo...
 Botones Tomen Todo el color que les corresponde...
 
+
+
+
 //instracciones para instalacion
 0.-Descargar git
 1.- Instalar el Node.js(Almenos la version 20)
