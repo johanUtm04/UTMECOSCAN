@@ -237,7 +237,7 @@ return (
       }}
       >
       <h2> Historial de Lecturas</h2>
-      <div style={{justifyContent:"center", display:"flex", /* para que sea flexible */ gap:"10px", /* espacio entre los elementos  */marginBottom:"20px" /* margen inferior */}}>
+      <div style={{justifyContent:"center", display:"flex", gap:"10px",marginBottom:"20px"}}>
       <button className="buttonPM" onClick={()=> {
         console.log("Boton de Johan Presionado")
         setSensorActivo(SENSORES.PM25)}}>PM2.5</button>
@@ -307,8 +307,8 @@ return (
         if (sensor === SENSORES.CO2) return "°C";
         return "";
       }
-      // Rango para PM2.5
-      if (l.sensor === "PM2.5") {
+      // Rango de mensajes y colores para PM2.5--
+      if (l.sensor === SENSORES.PM25) {
         if (valor <= 12) { estado = "Bueno ✅"; color = "green"; }
         else if (valor <= 35) { estado = "Aceptable 🙂"; color = "yellow"; }
         else if (valor <= 55) { estado = "Dañino ⚠️"; color = "orange"; }
@@ -317,13 +317,31 @@ return (
       }
 
       // Rango para PM10
-      if (l.sensor === "PM10") {
+      if (l.sensor === SENSORES.PM10) {
         if (valor <= 50) { estado = "Bueno ✅"; color = "green"; }
         else if (valor <= 100) { estado = "Aceptable 🙂"; color = "yellow"; }
         else if (valor <= 250) { estado = "Dañino ⚠️"; color = "orange"; }
         else if (valor <= 350) { estado = "Peligroso 🚨"; color = "red"; }
         else { estado = "Muy peligroso ☠️"; color = "darkred"; }
       }
+
+      // Rango para CO₂
+      if (l.sensor === SENSORES.CO2) {
+        if (valor <= 600) { estado = "Bueno ✅"; color = "green"; }
+        else if (valor <= 1000) { estado = "Aceptable"; color = "yellow"; }
+        else if (valor <= 1500) { estado = "Malo"; color = "orange"; }
+        else if (valor <= 2000) { estado = "Peligroso 🚨"; color = "red"; }
+        else { estado = "Muy peligroso ☠️"; color = "darkred"; }
+      }
+
+    // Rango para Temperatura
+    if (l.sensor === SENSORES.TEMPERATURA) {
+      if (valor >= 18 && valor <= 24) { estado = "Confort"; color = "green"; }
+      else if ((valor >= 15 && valor < 18) || (valor > 24 && valor <= 27)) { estado = "Aceptable"; color = "yellow"; }
+      else if ((valor < 15 && valor >= 0) || (valor > 27 && valor <= 30)) { estado = "Incómodo"; color = "orange"; }
+      else if (valor > 30) { estado = "Peligroso 🚨"; color = "red"; }
+      else { estado = "Valor atípico"; color = "gray"; }
+    }
 
       return (
         <tr key={l.id} style={{ borderBottom: "1px solid black" }}>
