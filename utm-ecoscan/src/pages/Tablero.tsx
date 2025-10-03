@@ -218,8 +218,11 @@ return (
         Este experimento tiene como objetivo medir la concentración de partículas 
         en el aire utilizando sensores conectados a un ESP32. Se Realizo con la intencion de medir la calidad del aire en ciertas parte
         de la Univesidad Tecnologica de Morelia {" "}
-        <img src={logoUtm}alt="Logo de la Utm"
-        style={{width: "50px", /* ancho */ height:"25px", /* alto */ verticalAlign: "middle", /* alineacion Vertical  */margin:" 0 5px" /* le da respiracion al texto */}} />
+        <img src={logoUtm} alt="Logo de la Utm"  className="logoUtm"
+        style={{width: "80px", /* ancho */ height:"25px", /* alto */ verticalAlign: "middle", /* alineacion Vertical 
+        
+        */margin:" 0 5px" /* le da respiracion al texto */}}  
+        onClick={() => window.open("https://ut-morelia.edu.mx/", "_blank")} />
         Los datos recolectados son procesados en tiempo real y se muestran en este tablero.
       </p>
     </div>

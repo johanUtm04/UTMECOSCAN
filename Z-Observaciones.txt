@@ -594,9 +594,10 @@ Alternar Entre UsEffects y botones para mostrar Tarjetas✔
 Cambiar console.log a promps o alerts para que usuario sepa que pasa...✔
 Boton de detener lecturas ...✔
 Estilizar barra fea abajo de botones xD...✔
+Agregar Columna para mencionarle al usuario como van las cosas✔
 Refactorizar Codigo...
 Botones Tomen Todo el color que les corresponde...
-
+Footer
 
 
 

@@ -114,11 +114,11 @@ useEffect(() => {
     display: "flex",
     justifyContent: "space-between",
     alignItems: "center",
-    padding: "10px 5px",
-    backgroundColor: "#88a2f6ff",
+    padding: "2px 5px",
+    background: "linear-gradient(135deg, #2980b9, #6dd5fa, #ffffff)",
     borderRadius: "10px",
     boxShadow: "0 4px 12px rgba(0,0,0,0.2)",
-    marginBottom: "20px",
+    marginBottom: "0px",
     border: "3px solid black",
   }}>
   <img
@@ -138,8 +138,8 @@ useEffect(() => {
   </Typography>
 
 <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-  <Typography variant="h6" sx={{ fontWeight: 600, color: "#ffffffff" }}>
-    Bienvenido, {usuario.displayName || usuario.email}
+  <Typography variant="h6" sx={{ fontWeight: 700, color: "#110b3b" }}>
+    ¡Bienvenido! {usuario.displayName || usuario.email}
   </Typography>
 
   {/* Avatar con menú */}
@@ -153,7 +153,7 @@ useEffect(() => {
       <img
         src={usuario.photoURL}
         alt={usuario.displayName}
-        style={{ width: "40px", height: "40px", borderRadius: "50%" }}
+        style={{ width: "40px", height: "40px", borderRadius: "50%", border:"2px solid black" }}
       />
     ) : (
       <AccountCircle sx={{ fontSize: 40, color: "#110b3b" }} />

@@ -335,3 +335,20 @@
 .buttonStop:hover {
   background-color: #b71c1c; /* rojo más oscuro */
 }
+
+.logoUtm {
+  height: 50px;
+  cursor: pointer;
+  filter: brightness(1);
+  transition: transform 0.3s ease, filter 0.3s ease;
+}
+
+.logoUtm:hover {
+  filter: brightness(1.2);
+  transform: scale(1.05);
+}
+
+.logoUtm:active {
+  transform: scale(0.9) rotate(-5deg);
+  filter: drop-shadow(0 0 15px cyan) brightness(1.3);
+}
