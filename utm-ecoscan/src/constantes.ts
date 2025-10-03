@@ -1,6 +1,7 @@
 export const SENSORES ={
     SIMULACION: "simulacion",
     PM25: "PM2.5",
+    PM10: "PM10",
     TEMPERATURA: "Temperatura",
     CO2: "CO2",
 };

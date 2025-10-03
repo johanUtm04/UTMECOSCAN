@@ -300,6 +300,13 @@ return (
       let estado = "";
       let color = "";
 
+      //Constante para intercambiar la unidad de medida
+      const unidad = (sensor:string) =>{
+        if (sensor === SENSORES.PM25 || sensor===SENSORES.PM10) return "µg/m³";
+        if (sensor === SENSORES.TEMPERATURA) return "ppm";
+        if (sensor === SENSORES.CO2) return "°C";
+        return "";
+      }
       // Rango para PM2.5
       if (l.sensor === "PM2.5") {
         if (valor <= 12) { estado = "Bueno ✅"; color = "green"; }
@@ -321,7 +328,7 @@ return (
       return (
         <tr key={l.id} style={{ borderBottom: "1px solid black" }}>
           <td style={{ padding: "8px" }}>{l.sensor}</td>
-          <td style={{ padding: "8px" }}>{valor} µg/m³</td>
+          <td style={{ padding: "8px" }}>{valor} {unidad(l.sensor)} </td>
           <td style={{ padding: "8px" }}>{l.timestamp.toDate().toLocaleString()}</td>
           <td style={{ padding: "8px", fontWeight: "bold", color }}>{estado}</td>
         </tr>
