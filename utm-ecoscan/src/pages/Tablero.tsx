@@ -7,14 +7,17 @@ import Typography from "@mui/material/Typography";
 import { collection, addDoc, Timestamp, where, getDocs, query } from "firebase/firestore";
 import { db } from "../firebase";
 import "./Tablero.css"
-import logoUtm from "../assets/UTM.png"
+import logoUtm from "../assets/imgs/UTM.png";
 import GraficaSensor from "../components/GraficaSensor";
 import { Snackbar } from "@mui/material";
-import { SENSORES, INTERVALO_LM5, API_URL, COLORES } from "../constantes";
+import { SENSORES, INTERVALO_LM5, API_URL } from "../constantes";
+import { checkThreshold } from "../utils/checkThreshold";
+import { pushNotificationForUser } from "../utils/notifications";
 //TIPOS Y CONSTANTES 🔒
 interface TABLERO {
   user: any; 
 }
+
 interface Lectura {
   timestamp: Timestamp;
   id: string;
@@ -98,7 +101,7 @@ useEffect(() => {
         const sensores = [SENSORES.CO2, SENSORES.TEMPERATURA, SENSORES.PM25];
         const dataSimulada = {
           sensor: sensores[Math.floor(Math.random() * sensores.length)],
-          valor: Math.floor(Math.random() * 100),
+          valor: Math.floor(Math.random() * 10000),
         };
 
         const nuevaLectura: Lectura = {
@@ -110,13 +113,17 @@ useEffect(() => {
 
         setLecturas((estadoAnterior) => [...estadoAnterior, nuevaLectura]);
 
-        await addDoc(collection(db, "lecturas simuladas"), {
-          sensor: dataSimulada.sensor,
-          valor: dataSimulada.valor,
-          timestamp: nuevaLectura.timestamp,
-          salon: "Aula 1",
-          userId: user?.uid,
-        });
+// Checar umbral
+const resultado = checkThreshold(nuevaLectura.sensor, nuevaLectura.valor);
+if (resultado.level !== "ok") {
+  await pushNotificationForUser(user.uid, {
+    sensor: nuevaLectura.sensor,
+    message: resultado.message,
+    level: resultado.level,
+    value: nuevaLectura.valor
+  });
+}
+
       }, INTERVALO_LM5);
     }
 
@@ -226,7 +233,6 @@ return (
         Los datos recolectados son procesados en tiempo real y se muestran en este tablero.
       </p>
     </div>
-
     {/* Consultar por fecha 1.- */}
     <div>
       <div
@@ -240,7 +246,8 @@ return (
       }}
       >
       <h2> Historial de Lecturas</h2>
-      <div style={{justifyContent:"center", display:"flex", gap:"10px",marginBottom:"20px"}}>
+      <div style={{justifyContent:"center", display:"flex", gap:"10px",
+      marginBottom:"20px"}}>
       <button className="buttonPM" onClick={()=> {
         console.log("Boton de Johan Presionado")
         setSensorActivo(SENSORES.PM25)}}>PM2.5</button>
@@ -254,7 +261,8 @@ return (
         console.log("Se activaron las Lecturas de Prueba")
         setSensorActivo(SENSORES.SIMULACION)}}>Boton Para lectura de Prueba</button>
       <button className="buttonStop" onClick={() => {
-        setSensorActivo(""), showSnackbar("-Deteniendo Simulaciones-")}}>Detener Lecturas</button>
+        setSensorActivo(""), showSnackbar("-Deteniendo Simulaciones-")}}>
+        Detener Lecturas</button>
       </div>
       </div>
       <input type="date"

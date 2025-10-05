@@ -3,27 +3,22 @@ import { register } from "../services/auth";
 import { TextField, Button, Box, Typography, Paper } from "@mui/material";
 import Checkbox from '@mui/material/Checkbox';
 import {FormControlLabel} from "@mui/material";
-import logo from "../assets/logoNegro.png";
+import logo from "../assets/imgs/logoNegro2.png";
 
 const RegisterForm: React.FC = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [repeatPassword, setRepeatPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [checked, setChecked] = useState<boolean>(false);
-
-
-  //Mapear Errores 🟢🟢🟢🟢
   const msjError = (codigo: string): string => {
   const errores: Record<string, string> = {
     "auth/email-already-in-use": "Este correo ya está registrado.",
     "auth/invalid-email": "El correo no es válido.",
     "auth/weak-password": "La contraseña es muy débil.",
   };
-
-  return errores[codigo] || "Ocurrió un error inesperado, intenta de nuevo.";
+    return errores[codigo] || "Ocurrió un error inesperado, intenta de nuevo.";
     }
-  
-//Mapear Errores 🟢🟢🟢🟢
   const handleLogin = () =>{
     if (checked) {
       localStorage.setItem("remember", "true");
@@ -44,6 +39,10 @@ const RegisterForm: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
+    if (password !== repeatPassword) {
+    setError("Las contraseñas no coinciden");
+    return;
+    }
     try {
       await register(email, password);
       alert("¡Registro exitoso!");
@@ -62,52 +61,22 @@ const RegisterForm: React.FC = () => {
   };
 
   return (
-//Contenedor Principal 🟢
-<Box
-sx={{minHeight: "90vh",display: "flex",flexDirection: "column",justifyContent: "center",
-      alignItems: "center",border: "2px solid #1de4f7",padding: 2, 
-      backgroundColor: "#000000ff",
-      backgroundImage: './assets/',  backgroundSize: "cover", backgroundPosition: "center", borderRadius:"20px",
-      }}
-  >
-  <Box sx={{ display: "flex", justifyContent: "center", mb: 1,}}>
-  <img src={logo} alt="Logo UTMECOSCAN" style={{ width: 300, height: 'auto' }} />
+<Box className="login-container-father">
+  <Box className="logo-container">
+  <img src={logo} alt="Logo UTMECOSCAN" className="logo-login-register"/>
   </Box>
-  <Paper
-    elevation={9}
-    sx={{
-    padding: 4,
-    maxWidth: 400,
-    width: "100%",
-    borderRadius: 5,
-    bgcolor: "#000000ff", 
-    }}
-    >
     <Typography
-      variant="h4"
-      component="h2"
-      sx={{ textAlign: "left", mb: 1, color: "#ffffffff", fontWeight: 600}}
+      variant="h5"
+      className="title-login-register"
       >Registrate
     </Typography>
-
-{/*Mapear Errores 🟢🟢🟢🟢 */}
-    <form onSubmit={handleSubmit}>
+    <form onSubmit={handleSubmit} className="form-container">
+      {/* Input Correo Electrónico */}
+      <Typography className="label-login-register">
+      Direccion de Correo Electrónico
+      </Typography>
       <TextField
-          sx={{
-          "& .MuiOutlinedInput-root": {
-          "& fieldset": {
-          borderColor: "#abb4b4ff", //color normal
-          },
-          "&:hover fieldset": {
-          borderColor: "#00bcd4", //cuando pasas el mouse
-          },
-          "&.Mui-focused fieldset": {
-          borderColor: "#00bcd4", //cuando está enfocado
-          },
-          },
-          input: { color: "white" }, // texto dentro del input
-          label: { color: "grey" }, // label
-          }}
+        className="input-login-register"
         type="email"
         label="Correo electronico"
         value={email}
@@ -120,23 +89,12 @@ sx={{minHeight: "90vh",display: "flex",flexDirection: "column",justifyContent: "
         error={!email.includes("@") && email.length > 0}
         required
       />
-      
+        {/* Input Contraseña */}
+        <Typography variant="body1" className="label-login-register">
+        Contraseña
+        </Typography>
       <TextField
-          sx={{
-          "& .MuiOutlinedInput-root": {
-          "& fieldset": {
-          borderColor: "#abb4b4ff", //color normal
-          },
-          "&:hover fieldset": {
-          borderColor: "#00bcd4", //cuando pasas el mouse
-          },
-          "&.Mui-focused fieldset": {
-          borderColor: "#00bcd4", //cuando está enfocado
-          },
-          },
-          input: { color: "white" }, // texto dentro del input
-          label: { color: "grey" }, // label
-          }}
+        className="input-login-register"
         type="password"
         label="Contraseña"
         placeholder="Correo"
@@ -148,6 +106,24 @@ sx={{minHeight: "90vh",display: "flex",flexDirection: "column",justifyContent: "
         margin="normal"
         required
       />
+        {/* Input Repetir Contraseña */}
+        <Typography variant="body1" className="label-login-register">
+        Repetir Contraseña
+        </Typography>
+      <TextField
+        className="input-login-register"
+        type="password"
+        label="Repetir Contraseña"
+        placeholder="Repetir Contraseña"
+        value={repeatPassword}
+        onChange={(e) => setRepeatPassword(e.target.value)}
+        fullWidth
+        variant="outlined"
+        size="medium"
+        margin="normal"
+        required
+      />
+  
                 <FormControlLabel
                 control={
                 <Checkbox
@@ -172,20 +148,12 @@ sx={{minHeight: "90vh",display: "flex",flexDirection: "column",justifyContent: "
             type="submit"
             variant="contained"
             fullWidth
-            sx={{
-              mt: 2,
-              bgcolor: "#1de4f7", 
-              "&:hover": { bgcolor: "#1de4f7" },
-              borderRadius: 2,
-              paddingY: 1.2,
-              fontWeight: 600,
-            }}
+            className="button-registerLogin"
             onClick={handleLogin}
             
           >Registrar</Button>
       {error && <p style={{ color: "red", fontWeight:600 }}>{error}</p>}
     </form>
-  </Paper>
 </Box>
   );
 };

@@ -1,0 +1,207 @@
+/* Boton para iniciar sesión o registrar Estilos globales */
+.button-registerLogin {
+  width: 100%;
+  appearance: none;
+  border: 1px solid rgba(27, 31, 35, .15);
+  border-radius: 6px;
+  box-shadow: rgba(27, 31, 35, .1) 0 1px 0;
+  box-sizing: border-box;
+  color: #000000 !important;
+  cursor: pointer;
+  display: inline-block;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 20px;
+  padding: 6px 16px;
+  position: relative;
+  text-align: center;
+  text-decoration: none;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  vertical-align: middle;
+  white-space: nowrap;
+  background-color: #21e5f7 !important;
+  font-weight: bold !important;
+}
+
+.button-registerLogin:focus:not(:focus-visible):not(.focus-visible) {
+  box-shadow: none;
+  outline: none;
+}
+
+.button-registerLogin:hover {
+  background-color: #17b8c1 !important;
+}
+
+.button-registerLogin:focus {
+  box-shadow: rgba(46, 164, 79, .4) 0 0 0 3px;
+  outline: none;
+}
+
+.button-registerLogin:disabled {
+  background-color: #94d3a2;
+  border-color: rgba(27, 31, 35, .1);
+  color: rgba(255, 255, 255, .8);
+  cursor: default;
+}
+
+.button-registerLogin:active {
+  background-color: #298e46;
+  box-shadow: rgba(20, 70, 32, .2) 0 1px 0 inset;
+}
+/* Fin Boton para iniciar sesión o registrar Estilos globales */
+
+
+/*Inicio Estilos globales para inputs de texto --Login y Register*/
+.input-login-register .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline {
+  border-color: #abb4b4ff;
+}
+
+.input-login-register .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline {
+  border-color: #00bcd4;
+}
+
+.input-login-register .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {
+  border-color: #00bcd4;
+}
+
+.input-login-register input {
+  color: rgb(255, 255, 255);
+}
+
+.input-login-register label {
+  color: #abb4b4ff;
+}
+/*Fin Estilos globales para inputs de texto --Login y Register*/
+
+
+/* Estilos globales para formularios de Login y Registro */
+.login-container-father {
+  width: 70vh;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  border: 2px solid rgb(0, 21, 255);
+}
+
+.logo-container{
+  border: 1px solid red;
+  display: flex;
+  justify-content: center;
+  margin-bottom: 1rem;
+}
+
+.logo-login-register{
+  width: 200px;
+  height: auto;
+}
+
+.title-login-register{
+  text-align: center;
+  color: white;
+  margin-bottom: 1rem;
+  font-weight: 600;
+  border: 2px solid brown;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 1rem;
+  margin-top: 1rem;
+  border: solid 1px rgb(255, 0, 247);
+}
+
+.form-container{
+  width: 100%;
+  padding: 1rem;
+  box-sizing: border-box;
+}
+
+.label-login-register {
+  text-align: left !important;
+  color: white;
+  margin-bottom: -15px !important;
+  font-size: 1rem !important;
+  font-weight: 530 !important;
+  border: 3px solid #00ff1e;
+}
+
+.title-login-google{
+  display: flex;
+  justify-content: center;
+  color: white;
+  font-weight: 600;
+  border: 2px solid yellow
+}
+
+.button-login-google {
+  margin-top: 2rem;
+  text-transform: none;
+  font-weight: bold;
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+}
+
+.button-login-google:hover {
+  background-color: rgb(254, 254, 254);
+  border-color: rgb(221, 217, 217);
+}
+
+.button-alternar-login-register{
+  background-color: #1de4f7 !important ;
+  font-weight: 400;
+  color: black !important;
+  font-weight: bolder !important;
+  border: 3px solid blue;
+}
+
+.button-alternar-login-register{
+    background-color: #1de4f7 !important;
+}
+
+/* Fin de Estilos globales para formularios de Login y Registro */
+
+/* Inicio Loading Bar */
+.loading-bar-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 4px;
+  z-index: 9999;
+  background: transparent;
+}
+
+.loading-bar {
+  width: 0;
+  height: 100%;
+  background: linear-gradient(90deg, #1de4f7, #2980b9);
+  animation: loadingBarAnim 1.2s linear infinite;
+}
+
+@keyframes loadingBarAnim {
+  0% { width: 0; }
+  50% { width: 80vw; }
+  100% { width: 100vw; }
+}
+/*Fin loading bar*/
+
+/* Inicio estilos footer login-register */
+.footer-app {
+  width: 100%;
+  background: #0d1117;
+  color: #fff;
+  text-align: center;
+  padding: 8px 0;
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  font-size: 1rem;
+  z-index: 100;
+  border-top: 2px solid #1de4f7;
+}
+/*Fin estilos footer login-register */

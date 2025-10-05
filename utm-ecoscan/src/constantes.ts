@@ -6,7 +6,7 @@ export const SENSORES ={
     CO2: "CO2",
 };
 
-export const INTERVALO_LM5 = 20000;
+export const INTERVALO_LM5 = 2000;
 
 //Url del esp que este usando en ese rato, 
 export const API_URL = "http://192.168.152.95/data-json";
