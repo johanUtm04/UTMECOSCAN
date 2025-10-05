@@ -87,11 +87,8 @@ return (
       O inicia sesión con
       </Box>
       <Button
-      variant="outlined"
-      fullWidth
       onClick={loginWithGoogle}
-      className="button-login-google"
-      >
+      className="button-login-google">
       <img src={GoogleIcon} alt="Google" style={{ width: 20, height: 20 }} />
       Iniciar sesión con Google
       </Button>

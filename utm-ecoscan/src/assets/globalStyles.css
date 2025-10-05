@@ -1,6 +1,6 @@
 /* Boton para iniciar sesión o registrar Estilos globales */
 .button-registerLogin {
-  width: 100%;
+  width: 100% !important;
   appearance: none;
   border: 1px solid rgba(27, 31, 35, .15);
   border-radius: 6px;
@@ -83,11 +83,12 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
-  border: 2px solid rgb(0, 21, 255);
+  margin-bottom: 2rem;
+  margin-top: 0.5rem;
+  align-items: center;
 }
 
 .logo-container{
-  border: 1px solid red;
   display: flex;
   justify-content: center;
   margin-bottom: 1rem;
@@ -103,13 +104,11 @@
   color: white;
   margin-bottom: 1rem;
   font-weight: 600;
-  border: 2px solid brown;
   display: flex;
   justify-content: center;
   align-items: center;
   margin-bottom: 1rem;
   margin-top: 1rem;
-  border: solid 1px rgb(255, 0, 247);
 }
 
 .form-container{
@@ -124,7 +123,6 @@
   margin-bottom: -15px !important;
   font-size: 1rem !important;
   font-weight: 530 !important;
-  border: 3px solid #00ff1e;
 }
 
 .title-login-google{
@@ -132,23 +130,25 @@
   justify-content: center;
   color: white;
   font-weight: 600;
-  border: 2px solid yellow
+  margin-bottom: 0.5rem;
 }
 
 .button-login-google {
-  margin-top: 2rem;
+  width: 90%;
+  margin: 16px auto 0;
   text-transform: none;
-  font-weight: bold;
-  color: white;
+  font-weight: bold!important;
+  color: white !important;
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 1rem;
+  border: 2px solid #00bcd4 !important;
 }
 
 .button-login-google:hover {
-  background-color: rgb(254, 254, 254);
-  border-color: rgb(221, 217, 217);
+  background-color: #1de4f7;
+  border-color: r#1de4f7;
+  color: rgb(0, 0, 0) !important;
 }
 
 .button-alternar-login-register{
@@ -193,15 +193,65 @@
 /* Inicio estilos footer login-register */
 .footer-app {
   width: 100%;
-  background: #0d1117;
-  color: #fff;
+  background: #1de4f7;
+  color: #000000;
   text-align: center;
-  padding: 8px 0;
-  position: fixed;
-  left: 0;
-  bottom: 0;
+  padding: 5px 0 0 0;
+  margin-top: 25px;
+}
+
+.footer-title {
+  color: #000000;
+  text-align: center;
   font-size: 1rem;
-  z-index: 100;
-  border-top: 2px solid #1de4f7;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+}
+
+
+.footer-social {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  padding-bottom: 8px;
+}
+
+.footer-btn {
+  background-color: #54456b;
+  color: #fff;
+  border: none;
+  border-radius: 50%;
+  width: 48px;
+  height: 48px;
+  font-size: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.footer-icon{
+  background-color: #54456b;
+  border: none;
+  border-radius: 50%;
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden; 
+  transition: transform 0.2s ease, background-color 0.3s ease;
+}
+
+.footer-btn:hover {
+  background-color: #6a5791;
+  transform: scale(1.1);
+  cursor: pointer;
+}
+
+
+.footer-copyright {
+  background: rgba(0,0,0,0.2);
+  padding: 8px 0;
+  font-size: 1rem;
 }
 /*Fin estilos footer login-register */
