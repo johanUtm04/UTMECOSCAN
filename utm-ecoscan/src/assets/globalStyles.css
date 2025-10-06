@@ -1,3 +1,62 @@
+/* Inicio estilos app.tsx */
+.main-container-app{
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+  overflow: hidden;
+  background: #0d1117;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 1px;
+  color: white;
+  z-index: 1;
+  overflow-y: auto;
+}
+
+.main-container-tablero{
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+  overflow: hidden;
+  background: #1852aaff;
+}
+
+.navbar-tablero{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 2px 5px;
+  background: #1de4f7;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  margin-bottom: 0px;
+  border: 3px solid black;
+}
+
+.message-welcome-user-container{
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.img-user{
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 3px solid #110b3b;
+}
+
+/*1852aaff*/
+/* Fin estilos app.tsx */
+
+
+
+
+
+
+
 /* Boton para iniciar sesión o registrar Estilos globales */
 .button-registerLogin {
   width: 100% !important;

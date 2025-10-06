@@ -1,5 +1,4 @@
-/* ===================== IMPORTACIONES ===================== 📗👨‍💻 */
-// Librerías externas
+//Importaciones
 import { useEffect, useState } from "react";
 import Button from "@mui/material/Button";
 import { Box, Typography } from "@mui/material";
@@ -8,17 +7,13 @@ import MenuItem from "@mui/material/MenuItem";
 import IconButton from "@mui/material/IconButton";
 import AccountCircle from "@mui/icons-material/AccountCircle";
 import LoadingBar from "./components/LoadingBar";
-// Servicios
 import { onUserStateChanged, logout } from "./services/auth";
-
-// Componentes
 import LoginForm from "./components/LoginForm";
 import RegisterForm from "./components/RegisterForm";
 import Tablero from "./pages/Tablero";
 import Notificaciones from "./components/Notificaciones";
-
-// Estilos y assets
 import "./App.css";
+import logoUtm from "./assets/imgs/logo.gif"
 import logo from "./assets/imgs/logoClaro.png";
 import fondoTablero from "./assets/imgs/5072612.jpg";
 import sensorTemperatura from "./assets/imgs/SensorTemperatura.png"
@@ -26,28 +21,23 @@ import co2 from "./assets/imgs/co2.png";
 import particulas from "./assets/imgs/particulas.png";
 import utmLogo25 from "./assets/imgs/utmLogo25.png"
 
-/* ===================== FUNCIÓN PRINCIPAL ===================== 👨‍💻📗 */
+//Declaramos el componente
 function App() {
-  /* ------------------- STATES ------------------- */
   const [usuario, setUsuario] = useState<any>(null);
   const [showRegister, setShowRegister] = useState(false);
   const [fechaHora, setFechaHora] = useState(new Date());
   const [loading, setLoading] = useState(true);
 
-  /* Menu usuario */
+  //Menu Desplegable
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
-
-  /* ------------------- FUNCIONES AUXILIARES ------------------- */
   const handleMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
   };
-
   const handleClose = () => {
     setAnchorEl(null);
   };
 
-  /* ------------------- EFFECTS ------------------- */
   // Actualizar hora cada segundo
   useEffect(() => {
     const intervalo = setInterval(() => {
@@ -56,9 +46,9 @@ function App() {
     return () => clearInterval(intervalo);
   }, []);
 
-  // Precargar imágenes
+  // Precargar imágenes(Evitar Lentitud al Montar el codigo)
   useEffect(() => {
-    const images = [logo, fondoTablero, sensorTemperatura, co2, particulas, utmLogo25];
+    const images = [logo, fondoTablero, sensorTemperatura, co2, particulas, utmLogo25, logoUtm];
     images.forEach((src) => {
       const img = new Image();
       img.src = src;
@@ -69,20 +59,12 @@ function App() {
   useEffect(() => {
     const unsubscribe = onUserStateChanged((currentUser) => {
       setUsuario(currentUser);
-    });
-    return () => unsubscribe();
-  }, []);
-
-  // Carga inicial del usuario
-  useEffect(() => {
-    const unsubscribe = onUserStateChanged((currentUser) => {
-      setUsuario(currentUser);
       setLoading(false);
     });
     return () => unsubscribe();
   }, []);
 
-  /* ------------------- RENDERS CONDICIONALES ------------------- */
+  //Mini Linea de Carga superior (en caso de necesitarla)
   if (loading) {
     return (
       <>
@@ -91,28 +73,14 @@ function App() {
     );
   }
 
-   if (!usuario) {
+  //Dibujado del componente
+  if (!usuario) {
     return (
-      <div style={{
-        position: "relative",
-        width: "100%",
-        minHeight: "100vh",
-        overflow: "hidden",
-        background: "#0d1117",
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        justifyContent: "center",
-        padding: "1px",
-        color: "white",
-        zIndex: 1,
-        overflowY: "auto",
-      }}>
+      <div className="main-container-app">
         {showRegister ? <RegisterForm /> : <LoginForm />}
         <Button
           className="button-alternar-login-register"
-          onClick={() => setShowRegister(!showRegister)}
-        >
+          onClick={() => setShowRegister(!showRegister)}>
           {showRegister
             ? "¿Ya tienes cuenta? Iniciar sesión"
             : "¿No tienes cuenta? Registrarte"}
@@ -161,43 +129,17 @@ function App() {
     © 2025 UTM EcoScan | Todos los derechos reservados UTM (Universidad Tecnológica de Morelia)
   </div>
 </footer>
-
       </div>
     );
   }
 
-  /* ------------------- INTERFAZ PRINCIPAL ------------------- */
+  //Dibujado del tablero
   return (
-    <div style={{ position: "relative", width: "100%", minHeight: "100vh", overflow: "hidden" }}>
-      {/* Fondo tablero */}
-      <img
-        src={fondoTablero}
-        alt="Fondo tablero"
-        style={{
-          width: "100%",
-          height: "100%",
-          objectFit: "cover",
-          position: "fixed",
-          top: 0,
-          left: 0,
-          zIndex: -1
-        }}
-      />
-
-      {/* Header */}
-      <div style={{
-        display: "flex",
-        justifyContent: "space-between",
-        alignItems: "center",
-        padding: "2px 5px",
-        background: "linear-gradient(135deg, #2980b9, #6dd5fa, #ffffff)",
-        borderRadius: "10px",
-        boxShadow: "0 4px 12px rgba(0,0,0,0.2)",
-        marginBottom: "0px",
-        border: "3px solid black"
-      }}>
+    <div className="main-container-tablero">
+      {/* Header --Navbar*/}
+      <div className="navbar-tablero">
         <img
-          src={logo}
+          src={logoUtm}
           alt="Logo tics utm"
           className="logo-tics"
           onClick={() =>
@@ -207,36 +149,26 @@ function App() {
             )
           }
         />
-
         <Typography variant="h5" sx={{ fontWeight: 600, color: "#110b3b" }}>
           Sistema de Medicion de Calidad del Aire
         </Typography>
-
+        {/* Notificaciones 🔔 */}
         <Notificaciones user={usuario} />
-
-        <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+        <div className="message-welcome-user-container">
           <Typography variant="h6" sx={{ fontWeight: 700, color: "#110b3b" }}>
             ¡Bienvenido! {usuario.displayName || usuario.email}
           </Typography>
-
           {/* Avatar con menú */}
           <IconButton size="large" onClick={handleMenu} color="inherit">
             {usuario.photoURL ? (
-              <img
+              <img className="img-user"
                 src={usuario.photoURL}
                 alt={usuario.displayName}
-                style={{
-                  width: "40px",
-                  height: "40px",
-                  borderRadius: "50%",
-                  border: "2px solid black"
-                }}
               />
             ) : (
               <AccountCircle sx={{ fontSize: 40, color: "#110b3b" }} />
             )}
           </IconButton>
-
           <Menu
             anchorEl={anchorEl}
             open={open}
@@ -258,11 +190,9 @@ function App() {
           </Menu>
         </div>
       </div>
-
-      {/* Contenido principal */}
+      {/* Tablero Render */}
       <Tablero user={usuario} />
     </div>
   );
 }
-
 export default App;
