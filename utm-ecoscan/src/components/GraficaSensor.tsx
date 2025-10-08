@@ -1,27 +1,20 @@
+//Importaciones
 import React from "react";
-import {
-  LineChart,
-  Line,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  Legend,
-  ResponsiveContainer
-} from "recharts";
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
 
+
+//Molde que necesita la grafica
 interface GraficaSensorProps {
   datos: { timestamp: Date; valor: number }[];
   sensor: string;
 }
 
-const GraficaSensor: React.FC<GraficaSensorProps> = ({ datos, sensor }) => {
-  // Convertimos datos a formato compatible
+//Declaramos el componente
+function GraficaSensor({datos, sensor}:GraficaSensorProps){
   const datosFormateados = datos.map(d => ({
-    fecha: d.timestamp.toLocaleTimeString(), // Hora en formato legible
+    fecha: d.timestamp.toLocaleTimeString(),
     valor: d.valor
   }));
-
   return (
     <div style={{ width: "100%", height: 300 }}>
       <ResponsiveContainer>

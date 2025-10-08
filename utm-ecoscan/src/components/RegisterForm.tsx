@@ -1,3 +1,4 @@
+//Refacterizacion (v1)
 //Importaciones
 import React, { useState,useEffect } from "react";
 import { register } from "../services/auth";
