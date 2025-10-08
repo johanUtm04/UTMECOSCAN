@@ -1,3 +1,4 @@
+//Refacterizacion (v1)
 //Importaciones
 import React, { useState } from "react";
 import { login } from "../services/auth";
@@ -25,6 +26,7 @@ function LoginForm () {
       alert("!Error, Credenciales Incorrectas¡")
     }
   };
+
 //Dibujado del componente
 return (
 //Contenedor Principal
