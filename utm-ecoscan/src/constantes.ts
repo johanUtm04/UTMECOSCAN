@@ -6,10 +6,10 @@ export const SENSORES ={
     CO2: "CO2",
 };
 
-export const INTERVALO_LM5 = 2000;
+export const INTERVALO_LM5 = 5000;
 
 //Url del esp que este usando en ese rato, 
-export const API_URL = "http://192.168.152.95/data-json";
+export const API_URL = "http://192.168.1.97/data-json";
 
 export const COLORES ={
   PM25: "#18a39b",

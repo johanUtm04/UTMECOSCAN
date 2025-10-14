@@ -202,8 +202,6 @@
   border-radius: 0.5em;
   border: 2px solid #88a2f6;
   background: rgba(255, 255, 255, 0.15);
-  color: #110b3b;
-  backdrop-filter: blur(8px);
   outline: none;
   margin-right: 10px;
   cursor: pointer;
@@ -255,15 +253,16 @@
 
 .buttonPruebas p {
   z-index: 1;
+  position: relative;
 }
 
 .buttonPruebas:hover {
   color: #ffffff;
-  font-weight: 700;
+  font-weight: bold;
 }
 
 .buttonPruebas:active {
-  border-color: #ff00d4; 
+  border-color: #ffffff; 
 }
 
 .buttonPruebas::after, .buttonPruebas::before {
@@ -298,6 +297,7 @@
 .buttonPruebas:active:before,
 .buttonPruebas:active:after {
   background: #ff00d4;
+  z-index: 0;
 }
 
 /*Boton de detenar lecturas*/

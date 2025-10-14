@@ -1,4 +1,4 @@
-// IMPORTACIONES 📕
+// IMPORTACIONES --
 import React, { useEffect, useState } from "react";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
@@ -9,44 +9,60 @@ import { db } from "../firebase";
 import "./Tablero.css"
 import logoUtm from "../assets/imgs/UTM.png";
 import GraficaSensor from "../components/GraficaSensor";
-import { Snackbar } from "@mui/material";
+import { Snackbar, Alert } from "@mui/material";
 import { SENSORES, INTERVALO_LM5, API_URL } from "../constantes";
 import { checkThreshold } from "../utils/checkThreshold";
 import { pushNotificationForUser } from "../utils/notifications";
-//TIPOS Y CONSTANTES 🔒
+
+//Interface(s): Sirve para definir la forma de un objeto
 interface TABLERO {
   user: any; 
 }
-
 interface Lectura {
   timestamp: Timestamp;
   id: string;
   sensor: string;
   valor: number;
 }
+interface SnackbarState  {
+open: boolean;
+message: string;
+severity: 'error' | 'info' | 'success' | 'warning';
+};
 
-const Tablero: React.FC<TABLERO> = ({ user }) => {
+//Inicio de Componente
+function Tablero({user}: TABLERO){
+//Constantes
 const [sensorActivo, setSensorActivo] = useState("");
 const [lecturas, setLecturas] = useState<Lectura[]>([]);
 const [fechaSeleccionada, setFechaSeleccionada] = useState<Date | null > (null);
 const lecturasFiltradas = lecturas.filter((l) => l.sensor === sensorActivo);
-//Mostrar Mensaje Toast Constantes 1.-
+const [snackbar2, setSnackbar2] = useState<SnackbarState>({
+  open: false,
+  message: "",
+  severity: "warning",
+});
+const showSnackbar2 = (message: string, severity: SnackbarSeverity) => {
+  setSnackbar2({ open: true, message, severity});
+};
 const [snackbarOpen,setSnackbarOpen] = useState(false);
-const [snackbarMessage, setSnackbarMessage] = useState(""); // mensaje del snackbar
-
-//Mostrar Mensaje Toast 2.-
+const [snackbarMessage, setSnackbarMessage] = useState("");
 const showSnackbar = (message: string) =>{
   setSnackbarMessage(message);
   setSnackbarOpen(true);
 }
-
-//Consultar por fecha 2.-
 const buscarPorFecha = async () => {
   if(!fechaSeleccionada) return;
   const datos = await getLecturasPorDia(fechaSeleccionada);
   setLecturas(datos);
 }
+let intervalId: NodeJS.Timeout;
 
+
+//Types: Sirve para definir alias de tipos(strings literales, uniones, tuplas)
+type SnackbarSeverity = 'success' | 'error' | 'info' | 'warning';
+
+//Funcion asincrona
 async function getLecturasPorDia (fecha: Date){
   //Inicio del día
   const inicio = new Date(fecha);
@@ -85,161 +101,114 @@ async function getLecturasPorDia (fecha: Date){
   return resultados;
 };
 
+//Inicio de useEffect:es un hook de React que sirve para ejecutar código “secundario” o “efectos” después de que el componente se renderiza
 useEffect(() => {
-  if (!sensorActivo) {
-    console.log("el sensor está vacío, no voy a hacer nada 🚫");
-    return;
-  }
-
-  let intervalId: NodeJS.Timeout;
-
+  //🐬Condicion del tipo de sensor que utilize el usuario
   const iniciarLectura = () => {
+    //Lectura simulada
     if (sensorActivo === SENSORES.SIMULACION) {
       intervalId = setInterval(async () => {
-        console.log("📡🤖 leyendo Datos Simulados 🤖...");
-        showSnackbar("📡🤖 Leyendo Datos Simulados 🤖...");
         const sensores = [SENSORES.CO2, SENSORES.TEMPERATURA, SENSORES.PM25];
         const dataSimulada = {
-          sensor: sensores[Math.floor(Math.random() * sensores.length)],
-          valor: Math.floor(Math.random() * 10000),
+        sensor: sensores[Math.floor(Math.random() * sensores.length)],
+        valor: Math.floor(Math.random() * 10000),
         };
-
         const nuevaLectura: Lectura = {
-          timestamp: Timestamp.now(),
-          id: Date.now().toString(),
-          sensor: dataSimulada.sensor,
-          valor: dataSimulada.valor,
+        timestamp: Timestamp.now(),
+        id: Date.now().toString(),
+        sensor: dataSimulada.sensor,
+        valor: dataSimulada.valor,
         };
-
+        //🐬Concatenar lecturas 
         setLecturas((estadoAnterior) => [...estadoAnterior, nuevaLectura]);
-
-// Checar umbral
-const resultado = checkThreshold(nuevaLectura.sensor, nuevaLectura.valor);
-if (resultado.level !== "ok") {
-  await pushNotificationForUser(user.uid, {
-    sensor: nuevaLectura.sensor,
-    message: resultado.message,
-    level: resultado.level,
-    value: nuevaLectura.valor
-  });
-}
-
+        const resultado = checkThreshold(nuevaLectura.sensor, nuevaLectura.valor);
+        if (resultado.level !== "ok") {
+        await pushNotificationForUser(user.uid, {
+        sensor: nuevaLectura.sensor,
+        message: resultado.message,
+        level: resultado.level,
+        value: nuevaLectura.valor
+        });
+      }
       }, INTERVALO_LM5);
     }
 
     else if (sensorActivo === SENSORES.PM25) {
       intervalId = setInterval(async () => {
-        console.log("📡🌫️✨ leyendo sensor de partículas (PM2.5)🌫️✨...");
-        showSnackbar("📡🌫️✨ leyendo sensor de partículas (PM2.5)🌫️✨...");
+        console.log("leyendo sensor de partículas (PM2.5)...");
         const res = await fetch(API_URL);
         const data = await res.json();
         const nuevaLectura: Lectura = {
-          timestamp: Timestamp.now(),
-          id: Date.now().toString(),
-          sensor: data.sensor,
-          valor: data.pm25,
+        timestamp: Timestamp.now(),
+        id: Date.now().toString(),
+        sensor: data.sensor,
+        valor: data.pm25,
         };
-
         setLecturas((prev) => [...prev, nuevaLectura]);
-
         await addDoc(collection(db, "Lecturas del PM2.5"), {
-          sensor: data.sensor,
-          valor: data.pm25,
-          timestamp: nuevaLectura.timestamp,
-          salon: "Salon A10",
-          userId: user?.uid,
+        sensor: data.sensor,
+        valor: data.pm25,
+        timestamp: nuevaLectura.timestamp,
+        salon: "Salon A10",
+        userId: user?.uid,
         });
       }, INTERVALO_LM5);
     }
 
     else if (sensorActivo === SENSORES.TEMPERATURA) {
       intervalId = setInterval(async () => {
-        console.log("📡🌡️♨️ leyendo sensor de Temperatura 🌡️♨️...");
-        showSnackbar("📡🌡️♨️ leyendo sensor de Temperatura 🌡️♨️...");
+        console.log("leyendo sensor de Temperatura...");
         const conexion = await fetch(API_URL);
         const dataBM280 = await conexion.json();
-
         const nuevaLecturaBM280: Lectura = {
-          timestamp: Timestamp.now(),
-          id: Date.now().toString(),
-          sensor: dataBM280.sensor,
-          valor: dataBM280.temperature,
+        timestamp: Timestamp.now(),
+        id: Date.now().toString(),
+        sensor: dataBM280.sensor,
+        valor: dataBM280.temperature,
         };
-
         setLecturas((prev) => [...prev, nuevaLecturaBM280]);
-
         await addDoc(collection(db, "Lecturas del BM280"), {
-          sensor: dataBM280.sensor,
-          valor: dataBM280.temperature,
-          timestamp: nuevaLecturaBM280.timestamp,
-          Lugar: "Morelia",
-          userId: user?.uid,
+        sensor: dataBM280.sensor,
+        valor: dataBM280.temperature,
+        timestamp: nuevaLecturaBM280.timestamp,
+        Lugar: "Morelia",
+        userId: user?.uid,
         });
       }, INTERVALO_LM5);
     }
   };
-
-  // 👇 Se llama la función
   iniciarLectura();
-  
-  // 🔥 Limpiar cuando cambie de sensor
   return () => {
     if (intervalId) clearInterval(intervalId);
-    console.log("Se limpió el sensor anterior ✅");
+    console.log("Se limpió el sensor anterior");
   };
 }, [sensorActivo, user]);
 
 
 return (
-  //Div principal.
-  <div style={{ padding: "20px" }}>
-  {/* Mostrar Mensaje Toast 3.- */}
-  <Snackbar
-      //Si esta en true, el snackbar se muestra
-    open={snackbarOpen}
-      //Tiempo antes de desaparecer solo
-    autoHideDuration={3000}
-      //funcion para cerrar el snackbar
-    onClose={()=>setSnackbarOpen(false)}
-      //Texto que aparece
-    message={snackbarMessage}
-      //donde aparece en la pantalla
-    anchorOrigin={{ vertical: "bottom", horizontal: "center" }}  
-  />
-
-    <div
-      style={{
-        marginBottom: "20px",
-        padding: "20px",
-        borderRadius: "20px",
-        background: "rgba(255, 255, 255, 0.15)",
-        backdropFilter: "blur(12px)",
-        border: "3px solid black",
-        color: "white",
-        textAlign: "center",
-      }}
-    >
-      <h2 style={{ marginBottom: "10px", color:"white", fontWeight:700 }}>Sistema de Medición de Calidad del Aire 
+  //Div principal: 
+  <div style={{ padding: "20px", border:"2px solid red"}}>
+    {/* Div de mensaja de bienvenida */}
+    <div className="msj-welcome-container">
+      <h2 style={{fontWeight:700, textAlign:"center" }}>
+      Sistema de Medición de Calidad del Aire 
       </h2>
-      <p style={{ fontSize: "16px", lineHeight: "1.5", color:"white", }}>
+      <p style={{ fontSize: "16px",color:"white", }}>
         Este experimento tiene como objetivo medir la concentración de partículas 
-        en el aire utilizando sensores conectados a un ESP32. Se Realizo con la intencion de medir la calidad del aire en ciertas parte
+        en el aire utilizando sensores conectados a un ESP32. 
+        Se Realizo con la intencion de medir la calidad del aire en ciertas parte
         de la Univesidad Tecnologica de Morelia {" "}
         <img src={logoUtm} alt="Logo de la Utm"  className="logoUtm"
-        style={{width: "80px", /* ancho */ height:"25px", /* alto */ verticalAlign: "middle", /* alineacion Vertical 
-        
-        */margin:" 0 5px" /* le da respiracion al texto */}}  
+        style={{width: "80px", height:"25px", verticalAlign: "middle", margin:" 0 5px", border: "2px solid red"}}  
         onClick={() => window.open("https://ut-morelia.edu.mx/", "_blank")} />
         Los datos recolectados son procesados en tiempo real y se muestran en este tablero.
       </p>
     </div>
     {/* Consultar por fecha 1.- */}
-    <div>
+    <div style={{border:"border 2px solid green"}}>
       <div
       style={{
         borderRadius: "10px",
-        background: "rgba(255, 255, 255, 0.15)",
-        backdropFilter: "blur(12px)",
         border: "3px solid black",
         color: "#ffffffff",
         textAlign: "center",
@@ -258,8 +227,10 @@ return (
         console.log("Boton de Axel Gabriel Presionado")
         setSensorActivo(SENSORES.TEMPERATURA)}}>Temperatura</button>
       <button className="buttonPruebas" onClick={()=>{
+      showSnackbar2("Leyendo Pruebas", "warning");
         console.log("Se activaron las Lecturas de Prueba")
-        setSensorActivo(SENSORES.SIMULACION)}}>Boton Para lectura de Prueba</button>
+        setSensorActivo(SENSORES.SIMULACION)}}>
+        Boton Para lectura de Prueba</button>
       <button className="buttonStop" onClick={() => {
         setSensorActivo(""), showSnackbar("-Deteniendo Simulaciones-")}}>
         Detener Lecturas</button>
@@ -279,8 +250,7 @@ return (
       {/* Resultados --Historial de lecturas */}
       <div
       style={{
-        background: "rgba(255, 255, 255, 0.15)", // Fondo con un poco de transparencia
-        backdropFilter: "blur(12px)",             // Efecto de desenfoque bonito
+        // Efecto de desenfoque bonito
         border: "2px solid black",                // Borde negro
         borderRadius: "12px",                     // Bordes redondeados
         padding: "1rem",                          // Espacio interno
@@ -290,19 +260,16 @@ return (
       >
         {/* Titulo de arriba */}
       <h3 style={{marginBottom:"0.5 rem"}}>Historial de Lecturas</h3>
-
-      {/* Tabla */}
-{/* Tabla */}
-<table style={{ width: "100%", borderCollapse: "collapse" }}>
-  {/* Encabezado de la tabla */}
-  <thead>
-    <tr style={{ background: "rgb(0,0,0,0.1)" }}>
-      <th style={{ textAlign: "left", padding: "8px" }}>Sensor</th>
-      <th style={{ textAlign: "left", padding: "8px" }}>Valor</th>
-      <th style={{ textAlign: "left", padding: "8px" }}>Fecha</th>
-      <th style={{ textAlign: "left", padding: "8px" }}>Calidad</th>
-    </tr>
-  </thead>
+    <table style={{ width: "100%", borderCollapse: "collapse" }}>
+      {/* Encabezado de la tabla */}
+      <thead>
+        <tr style={{ background: "rgb(0,0,0,0.1)" }}>
+          <th style={{ textAlign: "left", padding: "8px" }}>Sensor</th>
+          <th style={{ textAlign: "left", padding: "8px" }}>Valor</th>
+          <th style={{ textAlign: "left", padding: "8px" }}>Fecha</th>
+          <th style={{ textAlign: "left", padding: "8px" }}>Calidad</th>
+        </tr>
+      </thead>
 
   {/* Cuerpo de la tabla (Filas de Datos) */}
   <tbody>
@@ -320,28 +287,28 @@ return (
       }
       // Rango de mensajes y colores para PM2.5--
       if (l.sensor === SENSORES.PM25) {
-        if (valor <= 12) { estado = "Bueno ✅"; color = "green"; }
-        else if (valor <= 35) { estado = "Aceptable 🙂"; color = "yellow"; }
-        else if (valor <= 55) { estado = "Dañino ⚠️"; color = "orange"; }
-        else if (valor <= 150) { estado = "Peligroso 🚨"; color = "red"; }
-        else { estado = "Muy peligroso ☠️"; color = "darkred"; }
+        if (valor <= 12) { estado = "Bueno "; color = "green"; }
+        else if (valor <= 35) { estado = "Aceptable "; color = "yellow"; }
+        else if (valor <= 55) { estado = "Dañino "; color = "orange"; }
+        else if (valor <= 150) { estado = "Peligroso "; color = "red"; }
+        else { estado = "Muy peligroso "; color = "darkred"; }
       }
 
       // Rango para PM10
       if (l.sensor === SENSORES.PM10) {
-        if (valor <= 50) { estado = "Bueno ✅"; color = "green"; }
-        else if (valor <= 100) { estado = "Aceptable 🙂"; color = "yellow"; }
-        else if (valor <= 250) { estado = "Dañino ⚠️"; color = "orange"; }
-        else if (valor <= 350) { estado = "Peligroso 🚨"; color = "red"; }
+        if (valor <= 50) { estado = "Bueno"; color = "green"; }
+        else if (valor <= 100) { estado = "Aceptable "; color = "yellow"; }
+        else if (valor <= 250) { estado = "Dañino "; color = "orange"; }
+        else if (valor <= 350) { estado = "Peligroso "; color = "red"; }
         else { estado = "Muy peligroso ☠️"; color = "darkred"; }
       }
 
       // Rango para CO₂
       if (l.sensor === SENSORES.CO2) {
-        if (valor <= 600) { estado = "Bueno ✅"; color = "green"; }
+        if (valor <= 600) { estado = "Bueno"; color = "green"; }
         else if (valor <= 1000) { estado = "Aceptable"; color = "yellow"; }
         else if (valor <= 1500) { estado = "Malo"; color = "orange"; }
-        else if (valor <= 2000) { estado = "Peligroso 🚨"; color = "red"; }
+        else if (valor <= 2000) { estado = "Peligroso "; color = "red"; }
         else { estado = "Muy peligroso ☠️"; color = "darkred"; }
       }
 
@@ -350,7 +317,7 @@ return (
       if (valor >= 18 && valor <= 24) { estado = "Confort"; color = "green"; }
       else if ((valor >= 15 && valor < 18) || (valor > 24 && valor <= 27)) { estado = "Aceptable"; color = "yellow"; }
       else if ((valor < 15 && valor >= 0) || (valor > 27 && valor <= 30)) { estado = "Incómodo"; color = "orange"; }
-      else if (valor > 30) { estado = "Peligroso 🚨"; color = "red"; }
+      else if (valor > 30) { estado = "Peligroso "; color = "red"; }
       else { estado = "Valor atípico"; color = "gray"; }
     }
 
@@ -365,17 +332,14 @@ return (
     })}
   </tbody>
 </table>
-
       </div>
     </div>
-    {/* En casi de no haber lecturas mostrar este mensaje */}
     {lecturas.length === 0 ? (
       <Typography variant="h4" color="#ffffffff" fontWeight={600}>
         No hay datos aún.
       </Typography>
     ) : /* en caso de que SI hay datos mostrar esto: */ (
       <div style={{ display: "flex", flexWrap: "wrap", gap: "15px", padding: "10px",}}>
-        {/* Inicio de Expresion JavaScript 🟨⬛*/}
         {lecturasFiltradas.map((l) => (
           /* Grafica */
           <Card
@@ -384,8 +348,6 @@ return (
               width: 200,
               borderRadius: 2,
               boxShadow: 3,
-              background: "rgba(255, 255, 255, 0.15)",
-              backdropFilter: "blur(10px)",
               border: "1px solid black",
             }}
           > 
@@ -412,9 +374,24 @@ return (
         ))}
       </div>
     )}
+    <Snackbar
+    open={snackbar2.open}
+    autoHideDuration={3000}
+    onClose={() => setSnackbar2({ ...snackbar2, open: false })}
+    anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+    >
+    <Alert
+    onClose={() => setSnackbar2({ ...snackbar2, open: false })}
+    severity={snackbar2.severity}
+    sx={{ width: '100%' }}
+    >
+    {snackbar2.message}
+    </Alert>
+    </Snackbar>
   </div>
   
 );
+
 };
 
 export default Tablero;
