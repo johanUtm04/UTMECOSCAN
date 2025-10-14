@@ -17,7 +17,7 @@ import "./App.css";
 import logoUtm from "./assets/imgs/logo.gif"
 import logo from "./assets/imgs/logoClaro.png";
 import fondoTablero from "./assets/imgs/5072612.jpg";
-import sensorTemperatura from "./assets/imgs/SensorTemperatura.png"
+import sensorTemperatura from "./assets/imgs/sensorTemperatura.png"
 import co2 from "./assets/imgs/co2.png";
 import particulas from "./assets/imgs/particulas.png";
 import utmLogo25 from "./assets/imgs/utmLogo25.png"
