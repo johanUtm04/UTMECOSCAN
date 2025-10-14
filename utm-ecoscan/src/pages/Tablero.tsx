@@ -187,7 +187,7 @@ useEffect(() => {
 
 return (
   //Div principal: 
-  <div style={{ padding: "20px", border:"2px solid red"}}>
+  <div style={{ padding: "20px", border:"4px solid red"}}>
     {/* Div de mensaja de bienvenida */}
     <div className="msj-welcome-container">
       <h2 style={{fontWeight:700, textAlign:"center" }}>
