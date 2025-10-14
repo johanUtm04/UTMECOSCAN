@@ -1,5 +1,5 @@
 // IMPORTACIONES --
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import CardHeader from "@mui/material/CardHeader";
@@ -45,8 +45,8 @@ const [snackbar2, setSnackbar2] = useState<SnackbarState>({
 const showSnackbar2 = (message: string, severity: SnackbarSeverity) => {
   setSnackbar2({ open: true, message, severity});
 };
-const [snackbarOpen,setSnackbarOpen] = useState(false);
-const [snackbarMessage, setSnackbarMessage] = useState("");
+const [,setSnackbarOpen] = useState(false);
+const [,setSnackbarMessage] = useState("");
 const showSnackbar = (message: string) =>{
   setSnackbarMessage(message);
   setSnackbarOpen(true);

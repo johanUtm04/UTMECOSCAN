@@ -2,7 +2,7 @@
 //Importaciones
 import { useEffect, useState } from "react";
 import Button from "@mui/material/Button";
-import { Box, Typography } from "@mui/material";
+import {Typography } from "@mui/material";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import IconButton from "@mui/material/IconButton";
@@ -26,7 +26,7 @@ import utmLogo25 from "./assets/imgs/utmLogo25.png"
 function App() {
   const [usuario, setUsuario] = useState<any>(null);
   const [showRegister, setShowRegister] = useState(false);
-  const [fechaHora, setFechaHora] = useState(new Date());
+
   const [loading, setLoading] = useState(true);
 
   //Menu Desplegable
@@ -39,13 +39,8 @@ function App() {
     setAnchorEl(null);
   };
 
-  // Actualizar hora cada segundo
-  useEffect(() => {
-    const intervalo = setInterval(() => {
-      setFechaHora(new Date());
-    }, 1000);
-    return () => clearInterval(intervalo);
-  }, []);
+
+  
 
   // Precargar imágenes(Evitar Lentitud al Montar el codigo)
   useEffect(() => {

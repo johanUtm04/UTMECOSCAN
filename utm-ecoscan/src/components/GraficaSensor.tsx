@@ -1,5 +1,5 @@
 //Importaciones
-import React from "react";
+
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
 
 
@@ -10,7 +10,7 @@ interface GraficaSensorProps {
 }
 
 //Declaramos el componente
-function GraficaSensor({datos, sensor}:GraficaSensorProps){
+function GraficaSensor({datos}:GraficaSensorProps){
   const datosFormateados = datos.map(d => ({
     fecha: d.timestamp.toLocaleTimeString(),
     valor: d.valor

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { collection, query, where, orderBy, onSnapshot, updateDoc, doc, deleteDoc } from "firebase/firestore";
 import { db } from "../firebase";
 import IconButton from "@mui/material/IconButton";
@@ -139,7 +139,7 @@ export default function Notificaciones({ user }: { user: any }) {
         >
         <Alert
         onClose={() => setSnackbar({ ...snackbar, open: false })}
-        severity={snackbar.severity}
+        severity={snackbar.severity as 'error' | 'warning' | 'info' | 'success'}
         sx={{ width: '100%' }}
         >
         {snackbar.message}
