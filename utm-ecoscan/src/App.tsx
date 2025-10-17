@@ -1,32 +1,18 @@
 //Refacterizacion (v1)
 //Importaciones
-import { useEffect, useState } from "react";
-import Button from "@mui/material/Button";
-import {Typography } from "@mui/material";
-import Menu from "@mui/material/Menu";
-import MenuItem from "@mui/material/MenuItem";
-import IconButton from "@mui/material/IconButton";
-import AccountCircle from "@mui/icons-material/AccountCircle";
-import LoadingBar from "./components/LoadingBar";
-import { onUserStateChanged, logout } from "./services/auth";
-import LoginForm from "./components/LoginForm";
-import RegisterForm from "./components/RegisterForm";
-import Tablero from "./pages/Tablero";
-import Notificaciones from "./components/Notificaciones";
+import { Button, Typography, Menu, MenuItem, IconButton, AccountCircle, useState, useEffect, onUserStateChanged, RegisterForm, LoginForm, Notificaciones, logout, Tablero, LoadingBar } from "./ui";
+
+//Hoja de estilos
 import "./App.css";
-import logoUtm from "./assets/imgs/logo.gif"
-import logo from "./assets/imgs/logoClaro.png";
-import fondoTablero from "./assets/imgs/5072612.jpg";
-import sensorTemperatura from "./assets/imgs/sensorTemperatura.png"
-import co2 from "./assets/imgs/co2.png";
-import particulas from "./assets/imgs/particulas.png";
-import utmLogo25 from "./assets/imgs/utmLogo25.png"
+
+//Imagenes
+import { logo, logoUtm, fondoTablero, sensorTemperatura, co2, particulas, utmLogo25 } from "./assets";
+
 
 //Declaramos el componente
 function App() {
   const [usuario, setUsuario] = useState<any>(null);
   const [showRegister, setShowRegister] = useState(false);
-
   const [loading, setLoading] = useState(true);
 
   //Menu Desplegable
@@ -64,7 +50,7 @@ function App() {
   if (loading) {
     return (
       <>
-      <LoadingBar />
+      <LoadingBar/>
       </>
     );
   }
@@ -186,8 +172,25 @@ function App() {
           </Menu>
         </div>
       </div>
-      {/* Tablero Render */}
       <Tablero user={usuario} />
+      <footer className="footer-app">
+<p className="footer-title">Conoce la tecnología detrás del monitoreo ambiental UTM EcoScan</p>
+  <div className="footer-social">
+    <a
+      href="https://ut-morelia.edu.mx/"
+      target="_blank"
+      rel="noopener noreferrer"
+      className="footer-btn"
+      title="Universidad Tecnológica de Morelia"
+    >
+      <img src={utmLogo25} alt="Logo de la Universidad" className="footer-icon" />
+    </a>
+                                                                                              
+  </div>
+  <div className="footer-copyright">
+    © 2025 UTM EcoScan | Todos los derechos reservados UTM (Universidad Tecnológica de Morelia)
+  </div>
+</footer>
     </div>
   );
 }

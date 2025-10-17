@@ -187,7 +187,7 @@ useEffect(() => {
 
 return (
   //Div principal: 
-  <div style={{ padding: "20px", border:"4px solid red"}}>
+  <div style={{ padding: "20px"}}>
     {/* Div de mensaja de bienvenida */}
     <div className="msj-welcome-container">
       <h2 style={{fontWeight:700, textAlign:"center" }}>
@@ -199,41 +199,58 @@ return (
         Se Realizo con la intencion de medir la calidad del aire en ciertas parte
         de la Univesidad Tecnologica de Morelia {" "}
         <img src={logoUtm} alt="Logo de la Utm"  className="logoUtm"
-        style={{width: "80px", height:"25px", verticalAlign: "middle", margin:" 0 5px", border: "2px solid red"}}  
+        style={{width: "80px", height:"25px", verticalAlign: "middle", margin:" 0 5px"}}  
         onClick={() => window.open("https://ut-morelia.edu.mx/", "_blank")} />
         Los datos recolectados son procesados en tiempo real y se muestran en este tablero.
       </p>
     </div>
     {/* Consultar por fecha 1.- */}
-    <div style={{border:"border 2px solid green"}}>
+    <div>
       <div
       style={{
         borderRadius: "10px",
-        border: "3px solid black",
         color: "#ffffffff",
         textAlign: "center",
       }}
       >
-      <h2> Historial de Lecturas</h2>
+      <h2 style={{color: "white"}}> ¿Qué sensor desea Utilizar?</h2>
       <div style={{justifyContent:"center", display:"flex", gap:"10px",
       marginBottom:"20px"}}>
-      <button className="buttonPM" onClick={()=> {
-        console.log("Boton de Johan Presionado")
-        setSensorActivo(SENSORES.PM25)}}>PM2.5</button>
-      <button className="buttonCO2" onClick={()=>{
-        console.log("Boton de Axel Antonio Presionado")
-        setSensorActivo(SENSORES.CO2)}}>CO2</button>
-      <button className="buttonTemp" onClick={()=>{
-        console.log("Boton de Axel Gabriel Presionado")
-        setSensorActivo(SENSORES.TEMPERATURA)}}>Temperatura</button>
-      <button className="buttonPruebas" onClick={()=>{
-      showSnackbar2("Leyendo Pruebas", "warning");
-        console.log("Se activaron las Lecturas de Prueba")
-        setSensorActivo(SENSORES.SIMULACION)}}>
-        Boton Para lectura de Prueba</button>
-      <button className="buttonStop" onClick={() => {
-        setSensorActivo(""), showSnackbar("-Deteniendo Simulaciones-")}}>
-        Detener Lecturas</button>
+      <button className="buttonPM" onClick={() => {
+        showSnackbar2("Leyendo Partículas 2.5", "info");  // tipo informativo
+        setSensorActivo(SENSORES.PM25);
+      }}>
+        PM2.5
+      </button>
+
+      <button className="buttonCO2" onClick={() => {
+        showSnackbar2("Leyendo Oxígeno", "success"); // tipo éxito
+        setSensorActivo(SENSORES.CO2);
+      }}>
+        CO2
+      </button>
+
+      <button className="buttonTemp" onClick={() => {
+        showSnackbar2("Leyendo Temperatura", "success"); // color principal
+        setSensorActivo(SENSORES.TEMPERATURA);
+      }}>
+        Temperatura
+      </button>
+
+      <button className="buttonPruebas" onClick={() => {
+        showSnackbar2("Leyendo Pruebas de Simulación","success"); // tono neutro
+        setSensorActivo(SENSORES.SIMULACION);
+      }}>
+        Lectura de Prueba
+      </button>
+
+<button className="buttonStop" onClick={() => {
+  setSensorActivo("");
+  showSnackbar("-Deteniendo Simulaciones-"); // rojo, alerta
+}}>
+  Detener Lecturas
+</button>
+
       </div>
       </div>
       <input type="date"
@@ -251,7 +268,6 @@ return (
       <div
       style={{
         // Efecto de desenfoque bonito
-        border: "2px solid black",                // Borde negro
         borderRadius: "12px",                     // Bordes redondeados
         padding: "1rem",                          // Espacio interno
         maxHeight: "250px",                       // Altura máxima de la tabla
@@ -259,15 +275,15 @@ return (
       }}
       >
         {/* Titulo de arriba */}
-      <h3 style={{marginBottom:"0.5 rem"}}>Historial de Lecturas</h3>
+      <h3 style={{marginBottom:"0.2 rem", color: "white"}}>Historial de Lecturas</h3>
     <table style={{ width: "100%", borderCollapse: "collapse" }}>
       {/* Encabezado de la tabla */}
       <thead>
-        <tr style={{ background: "rgb(0,0,0,0.1)" }}>
-          <th style={{ textAlign: "left", padding: "8px" }}>Sensor</th>
-          <th style={{ textAlign: "left", padding: "8px" }}>Valor</th>
-          <th style={{ textAlign: "left", padding: "8px" }}>Fecha</th>
-          <th style={{ textAlign: "left", padding: "8px" }}>Calidad</th>
+        <tr style={{ background: "#1de4f7", color: "black" }}>
+          <th style={{ textAlign: "left", padding: "12px", fontWeight: "600" }}>Sensor</th>
+          <th style={{ textAlign: "left", padding: "12px", fontWeight: "600" }}>Valor</th>
+          <th style={{ textAlign: "left", padding: "12px", fontWeight: "600" }}>Fecha</th>
+          <th style={{ textAlign: "left", padding: "12px", fontWeight: "600" }}>Calidad</th>
         </tr>
       </thead>
 
@@ -322,7 +338,7 @@ return (
     }
 
       return (
-        <tr key={l.id} style={{ borderBottom: "1px solid black" }}>
+        <tr key={l.id} style={{ borderBottom: "1px solid black", background: "#faf9f6"}}>
           <td style={{ padding: "8px" }}>{l.sensor}</td>
           <td style={{ padding: "8px" }}>{valor} {unidad(l.sensor)} </td>
           <td style={{ padding: "8px" }}>{l.timestamp.toDate().toLocaleString()}</td>
@@ -348,7 +364,6 @@ return (
               width: 200,
               borderRadius: 2,
               boxShadow: 3,
-              border: "1px solid black",
             }}
           > 
           <div style={{marginTop:"20px", background:"white", padding: "10px", borderRadius: "10px"}}>
