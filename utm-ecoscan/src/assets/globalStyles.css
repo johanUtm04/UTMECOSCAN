@@ -366,7 +366,6 @@
 .msj-welcome-container{
   padding: 10px;
   border-Radius: 10px;
-  border: 3px solid blue;
   color: white;
   text-Align: center,
 }
@@ -374,9 +373,10 @@
 
 
 /* --- Login / Register Responsivo --- */
+/* Tablets Grandes o laptosp pequeñas */
 @media (max-width: 1024px) {
   .login-container-father {
-    width: 60vh; /* más compacto en pantallas grandes pero no escritorio */
+    width: 60vh;
     margin-top: 1rem;
     margin-bottom: 1rem;
   }
@@ -396,8 +396,12 @@
   .button-login-google {
     width: 95%;
   }
+
+  /* Tablero */
+
 }
 
+/* Tablets en Modo vertical */
 @media (max-width: 768px) {
   .login-container-father {
     width: 50vh;
@@ -416,6 +420,7 @@
   }
 }
 
+/* SmartPhones Pequeños */
 @media (max-width: 480px) {
   .login-container-father {
     width: 90%;
@@ -454,11 +459,6 @@
   .main-container-app {
     padding: 0.5rem;
   }
-  .navbar-tablero {
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 10px;
-  }
   .message-welcome-user-container {
     gap: 5px;
   }
@@ -469,19 +469,12 @@
 }
 
 @media (max-width: 768px) {
-  .navbar-tablero {
-    flex-direction: column;
-    align-items: stretch;
-  }
   .main-container-app {
     padding: 0.3rem;
   }
 }
 
 @media (max-width: 480px) {
-  .navbar-tablero {
-    padding: 1px 2px;
-  }
   .img-user {
     width: 30px;
     height: 30px;
@@ -491,4 +484,25 @@
     align-items: center;
     gap: 4px;
   }
+}
+
+/* --- Tablero Responsivo --- */
+/* 1. Escritorio grande */
+@media (min-width: 1025px) {
+  
+}
+
+/* 2. Tablets grandes / laptops pequeños */
+@media (max-width: 1024px) {
+  /* Tu CSS para pantallas medianas */
+}
+
+/* 3. Tablets pequeñas / smartphones grandes */
+@media (max-width: 768px) {
+  /* Tu CSS para pantallas pequeñas */
+}
+
+/* 4. Smartphones pequeños */
+@media (max-width: 480px) {
+  /* Tu CSS para pantallas muy pequeñas */
 }

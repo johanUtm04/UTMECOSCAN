@@ -1,34 +1,14 @@
-//Refacterizacion (v1)
-//Importaciones
-import { Button, Typography, Menu, MenuItem, IconButton, AccountCircle, useState, useEffect, onUserStateChanged, RegisterForm, LoginForm, Notificaciones, logout, Tablero, LoadingBar } from "./ui";
-
-//Hoja de estilos
+import React, { useState, useEffect } from "react";
 import "./App.css";
-
-//Imagenes
+import { onUserStateChanged, logout, LoadingBar } from "./ui";
 import { logo, logoUtm, fondoTablero, sensorTemperatura, co2, particulas, utmLogo25 } from "./assets";
+import LoginPage from "./pages/LoginPage";
+import DashboardPage from "./pages/DashboardPage";
 
-
-//Declaramos el componente
 function App() {
   const [usuario, setUsuario] = useState<any>(null);
-  const [showRegister, setShowRegister] = useState(false);
   const [loading, setLoading] = useState(true);
 
-  //Menu Desplegable
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-  const open = Boolean(anchorEl);
-  const handleMenu = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorEl(event.currentTarget);
-  };
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
-
-
-  
-
-  // Precargar imágenes(Evitar Lentitud al Montar el codigo)
   useEffect(() => {
     const images = [logo, fondoTablero, sensorTemperatura, co2, particulas, utmLogo25, logoUtm];
     images.forEach((src) => {
@@ -37,7 +17,6 @@ function App() {
     });
   }, []);
 
-  // Escuchar cambios de usuario
   useEffect(() => {
     const unsubscribe = onUserStateChanged((currentUser) => {
       setUsuario(currentUser);
@@ -46,152 +25,18 @@ function App() {
     return () => unsubscribe();
   }, []);
 
-  //Mini Linea de Carga superior (en caso de necesitarla)
-  if (loading) {
-    return (
-      <>
-      <LoadingBar/>
-      </>
-    );
-  }
+  if (loading) return <LoadingBar />;
 
-  //Dibujado del componente
-  if (!usuario) {
-    return (
-      <div className="main-container-app">
-        {showRegister ? <RegisterForm /> : <LoginForm />}
-        <Button
-          className="button-alternar-login-register"
-          onClick={() => setShowRegister(!showRegister)}>
-          {showRegister
-            ? "¿Ya tienes cuenta? Iniciar sesión"
-            : "¿No tienes cuenta? Registrarte"}
-        </Button>
-<footer className="footer-app">
-<p className="footer-title">Conoce la tecnología detrás del monitoreo ambiental UTM EcoScan</p>
-  <div className="footer-social">
-    <a
-      href="https://www.google.com/search?q=¿Qué+son+las+partículas+PM2.5+y+PM10%3F"
-      target="_blank"
-      rel="noopener noreferrer"
-      className="footer-btn"
-      title="Sensor de Partículas"
-    >
-      <img src={particulas} alt="Sensor De Partículas" className="footer-icon" />
-    </a>
-    <a
-      href="https://www.google.com/search?q=Sensor+de+CO2+y+su+funcionamiento"
-      target="_blank"
-      rel="noopener noreferrer"
-      className="footer-btn"
-      title="Sensor de CO₂"
-    >
-      <img src={co2} alt="Sensor De CO2" className="footer-icon" />
-    </a>
-    <a
-      href="https://www.google.com/search?q=Sensor+de+temperatura+ambiental"
-      target="_blank"
-      rel="noopener noreferrer"
-      className="footer-btn"
-      title="Sensor de Temperatura"
-    >
-      <img src={sensorTemperatura} alt="Sensor De Temperatura" className="footer-icon" />
-    </a>
-    <a
-      href="https://ut-morelia.edu.mx/"
-      target="_blank"
-      rel="noopener noreferrer"
-      className="footer-btn"
-      title="Universidad Tecnológica de Morelia"
-    >
-      <img src={utmLogo25} alt="Logo de la Universidad" className="footer-icon" />
-    </a>
-  </div>
-  <div className="footer-copyright">
-    © 2025 UTM EcoScan | Todos los derechos reservados UTM (Universidad Tecnológica de Morelia)
-  </div>
-</footer>
-      </div>
-    );
-  }
+  const handleLogout = () => {
+    logout();
+    setUsuario(null);
+  };
 
-  //Dibujado del tablero
-  return (
-    <div className="main-container-tablero">
-      {/* Header --Navbar*/}
-      <div className="navbar-tablero">
-        <img
-          src={logoUtm}
-          alt="Logo tics utm"
-          className="logo-tics"
-          onClick={() =>
-            window.open(
-              "https://ut-morelia.edu.mx/index.php/tecnologias-de-la-informacion/",
-              "_blank"
-            )
-          }
-        />
-        <Typography variant="h5" sx={{ fontWeight: 600, color: "#110b3b" }}>
-          Sistema de Medicion de Calidad del Aire
-        </Typography>
-        {/* Notificaciones 🔔 */}
-        <Notificaciones user={usuario} />
-        <div className="message-welcome-user-container">
-          <Typography variant="h6" sx={{ fontWeight: 700, color: "#110b3b" }}>
-            ¡Bienvenido! {usuario.displayName || usuario.email}
-          </Typography>
-          {/* Avatar con menú */}
-          <IconButton size="large" onClick={handleMenu} color="inherit">
-            {usuario.photoURL ? (
-              <img className="img-user"
-                src={usuario.photoURL}
-                alt={usuario.displayName}
-              />
-            ) : (
-              <AccountCircle sx={{ fontSize: 40, color: "#110b3b" }} />
-            )}
-          </IconButton>
-          <Menu
-            anchorEl={anchorEl}
-            open={open}
-            onClose={handleClose}
-            anchorOrigin={{ vertical: "top", horizontal: "right" }}
-            transformOrigin={{ vertical: "top", horizontal: "right" }}
-          >
-            <MenuItem onClick={handleClose}>Perfil</MenuItem>
-            <MenuItem onClick={handleClose}>Ajustes</MenuItem>
-            <MenuItem
-              onClick={() => {
-                logout();
-                setUsuario(null);
-                handleClose();
-              }}
-            >
-              Cerrar sesión
-            </MenuItem>
-          </Menu>
-        </div>
-      </div>
-      <Tablero user={usuario} />
-      <footer className="footer-app">
-<p className="footer-title">Conoce la tecnología detrás del monitoreo ambiental UTM EcoScan</p>
-  <div className="footer-social">
-    <a
-      href="https://ut-morelia.edu.mx/"
-      target="_blank"
-      rel="noopener noreferrer"
-      className="footer-btn"
-      title="Universidad Tecnológica de Morelia"
-    >
-      <img src={utmLogo25} alt="Logo de la Universidad" className="footer-icon" />
-    </a>
-                                                                                              
-  </div>
-  <div className="footer-copyright">
-    © 2025 UTM EcoScan | Todos los derechos reservados UTM (Universidad Tecnológica de Morelia)
-  </div>
-</footer>
-    </div>
+  return usuario ? (
+    <DashboardPage user={usuario} onLogout={handleLogout} />
+  ) : (
+    <LoginPage />
   );
 }
+
 export default App;
