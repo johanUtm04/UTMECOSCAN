@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import "./App.css";
 import { onUserStateChanged, logout, LoadingBar } from "./ui";
 import { logo, logoUtm, fondoTablero, sensorTemperatura, co2, particulas, utmLogo25 } from "./assets";

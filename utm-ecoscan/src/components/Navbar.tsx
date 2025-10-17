@@ -1,7 +1,6 @@
 import React from "react";
 import { Typography, IconButton, Menu, MenuItem } from "@mui/material";
 import { AccountCircle } from "../ui";
-import { logout } from "../ui";
 import Notificaciones from "./Notificaciones";
 import { logoUtm } from "../assets";
 

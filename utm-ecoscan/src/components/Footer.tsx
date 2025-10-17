@@ -1,5 +1,5 @@
 import React from "react";
-import { sensorTemperatura, co2, particulas, utmLogo25 } from "../assets";
+import { sensorTemperatura, co2, utmLogo25 } from "../assets";
 
 const Footer: React.FC = () => (
   <footer className="footer-app">
