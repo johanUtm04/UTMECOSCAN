@@ -11,3 +11,5 @@ export {default as LoginForm} from "./components/LoginForm";
 export {default as RegisterForm} from "./components/RegisterForm";
 export {default as Tablero} from "./pages/Tablero";
 export {default as Notificaciones} from "./components/Notificaciones";
+export {default as LoginPage} from "./pages/LoginPage";
+export {default as DashboardPage} from "./pages/DashboardPage";
