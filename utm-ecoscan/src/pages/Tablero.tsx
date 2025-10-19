@@ -1,49 +1,27 @@
-// IMPORTACIONES --
-import { useEffect, useState } from "react";
-import Card from "@mui/material/Card";
-import CardContent from "@mui/material/CardContent";
-import CardHeader from "@mui/material/CardHeader";
-import Typography from "@mui/material/Typography";
-import { collection, addDoc, Timestamp, where, getDocs, query } from "firebase/firestore";
-import { db } from "../firebase";
-import "./Tablero.css"
-import logoUtm from "../assets/imgs/UTM.png";
-import GraficaSensor from "../components/GraficaSensor";
-import { Snackbar, Alert } from "@mui/material";
-import { SENSORES, INTERVALO_LM5, API_URL } from "../constantes";
-import { checkThreshold } from "../utils/checkThreshold";
-import { pushNotificationForUser } from "../utils/notifications";
+import {useState, Typography,Card, CardContent, CardHeader, GraficaSensor, Snackbar, Alert} from "../ui";  //Importacion componentes--
+import "./Tablero.css" //Importacion de Hoja de estilos--
+import type {  TABLERO, SnackbarState} from "../ui";//Importacion de interfaces (type)--
+import {logoUniversidad} from "../assets/index";
+import { COLORES, SENSORES,} from "../constantes";
+import { useLecturas } from "../hooks/useLecturas";
 
-//Interface(s): Sirve para definir la forma de un objeto
-interface TABLERO {
-  user: any; 
-}
-interface Lectura {
-  timestamp: Timestamp;
-  id: string;
-  sensor: string;
-  valor: number;
-}
-interface SnackbarState  {
-open: boolean;
-message: string;
-severity: 'error' | 'info' | 'success' | 'warning';
-};
-
-//Inicio de Componente
+//Inicio de Componente--
 function Tablero({user}: TABLERO){
-//Constantes
-const [sensorActivo, setSensorActivo] = useState("");
-const [lecturas, setLecturas] = useState<Lectura[]>([]);
-const [fechaSeleccionada, setFechaSeleccionada] = useState<Date | null > (null);
+//Constantes--
+  const [sensorActivo, setSensorActivo] = useState("");
+  const [fechaSeleccionada, setFechaSeleccionada] = useState<Date | null>(null);
+  const { lecturas, buscarPorFecha } = useLecturas(user, sensorActivo, fechaSeleccionada);
+
+
+
 const lecturasFiltradas = lecturas.filter((l) => l.sensor === sensorActivo);
 const [snackbar2, setSnackbar2] = useState<SnackbarState>({
   open: false,
   message: "",
   severity: "warning",
 });
-const showSnackbar2 = (message: string, severity: SnackbarSeverity) => {
-  setSnackbar2({ open: true, message, severity});
+const showSnackbar2 = (message: string, severity: SnackbarSeverity, customColor?: string ) => {
+  setSnackbar2({ open: true, message, severity, customColor});
 };
 const [,setSnackbarOpen] = useState(false);
 const [,setSnackbarMessage] = useState("");
@@ -51,138 +29,11 @@ const showSnackbar = (message: string) =>{
   setSnackbarMessage(message);
   setSnackbarOpen(true);
 }
-const buscarPorFecha = async () => {
-  if(!fechaSeleccionada) return;
-  const datos = await getLecturasPorDia(fechaSeleccionada);
-  setLecturas(datos);
-}
-let intervalId: NodeJS.Timeout;
 
 
 //Types: Sirve para definir alias de tipos(strings literales, uniones, tuplas)
 type SnackbarSeverity = 'success' | 'error' | 'info' | 'warning';
 
-//Funcion asincrona
-async function getLecturasPorDia (fecha: Date){
-  //Inicio del día
-  const inicio = new Date(fecha);
-  inicio.setHours(0,0,0,0);
-
-  //fin del día
-  const fin = new Date(fecha);
-  fin.setHours(23,59,59,999);
-
-  //armamos el query --La receta que quieres buscar
-  const q = query (
-    collection(db, "lecturas"),
-    where("timestamp", ">=", Timestamp.fromDate(inicio)),
-    where("timestamp", "<=", Timestamp.fromDate(fin))
-  );
-
-  //Ejecutamos el query, es decir, la consulta --Vas al refri y traes los alimentos segun la receta
-  const querySnapshot = await getDocs(q);
-
-  //Inicializacion de un arreglo vacio const resultados: any[]=[];
-  const resultados: any[]=[];
-
-    //Recorremos cada elemento de la consulta query
-  querySnapshot.forEach((doc)=>{
-      //Los meteremos en el array resultados
-    resultados.push({id: doc.id, ...doc.data()});
-          /*Ejemplo resultados quedaria algo asi:
-          [
-            {id:1, Timestamp: 12-may-35, valor:28},
-            {}, {}, {}
-          ] */
-
-    //Escribimos en consola estos datos
-    console.log(doc.id, doc.data().timestamp.toDate());
-  })
-  return resultados;
-};
-
-//Inicio de useEffect:es un hook de React que sirve para ejecutar código “secundario” o “efectos” después de que el componente se renderiza
-useEffect(() => {
-  //🐬Condicion del tipo de sensor que utilize el usuario
-  const iniciarLectura = () => {
-    //Lectura simulada
-    if (sensorActivo === SENSORES.SIMULACION) {
-      intervalId = setInterval(async () => {
-        const sensores = [SENSORES.CO2, SENSORES.TEMPERATURA, SENSORES.PM25];
-        const dataSimulada = {
-        sensor: sensores[Math.floor(Math.random() * sensores.length)],
-        valor: Math.floor(Math.random() * 10000),
-        };
-        const nuevaLectura: Lectura = {
-        timestamp: Timestamp.now(),
-        id: Date.now().toString(),
-        sensor: dataSimulada.sensor,
-        valor: dataSimulada.valor,
-        };
-        //🐬Concatenar lecturas 
-        setLecturas((estadoAnterior) => [...estadoAnterior, nuevaLectura]);
-        const resultado = checkThreshold(nuevaLectura.sensor, nuevaLectura.valor);
-        if (resultado.level !== "ok") {
-        await pushNotificationForUser(user.uid, {
-        sensor: nuevaLectura.sensor,
-        message: resultado.message,
-        level: resultado.level,
-        value: nuevaLectura.valor
-        });
-      }
-      }, INTERVALO_LM5);
-    }
-
-    else if (sensorActivo === SENSORES.PM25) {
-      intervalId = setInterval(async () => {
-        console.log("leyendo sensor de partículas (PM2.5)...");
-        const res = await fetch(API_URL);
-        const data = await res.json();
-        const nuevaLectura: Lectura = {
-        timestamp: Timestamp.now(),
-        id: Date.now().toString(),
-        sensor: data.sensor,
-        valor: data.pm25,
-        };
-        setLecturas((prev) => [...prev, nuevaLectura]);
-        await addDoc(collection(db, "Lecturas del PM2.5"), {
-        sensor: data.sensor,
-        valor: data.pm25,
-        timestamp: nuevaLectura.timestamp,
-        salon: "Salon A10",
-        userId: user?.uid,
-        });
-      }, INTERVALO_LM5);
-    }
-
-    else if (sensorActivo === SENSORES.TEMPERATURA) {
-      intervalId = setInterval(async () => {
-        console.log("leyendo sensor de Temperatura...");
-        const conexion = await fetch(API_URL);
-        const dataBM280 = await conexion.json();
-        const nuevaLecturaBM280: Lectura = {
-        timestamp: Timestamp.now(),
-        id: Date.now().toString(),
-        sensor: dataBM280.sensor,
-        valor: dataBM280.temperature,
-        };
-        setLecturas((prev) => [...prev, nuevaLecturaBM280]);
-        await addDoc(collection(db, "Lecturas del BM280"), {
-        sensor: dataBM280.sensor,
-        valor: dataBM280.temperature,
-        timestamp: nuevaLecturaBM280.timestamp,
-        Lugar: "Morelia",
-        userId: user?.uid,
-        });
-      }, INTERVALO_LM5);
-    }
-  };
-  iniciarLectura();
-  return () => {
-    if (intervalId) clearInterval(intervalId);
-    console.log("Se limpió el sensor anterior");
-  };
-}, [sensorActivo, user]);
 
 
 return (
@@ -190,15 +41,13 @@ return (
   <div style={{ padding: "20px"}}>
     {/* Div de mensaja de bienvenida */}
     <div className="msj-welcome-container">
-      <h2 style={{fontWeight:700, textAlign:"center" }}>
-      Sistema de Medición de Calidad del Aire 
-      </h2>
+      <h1>Bienvenido</h1>
       <p style={{ fontSize: "16px",color:"white", }}>
         Este experimento tiene como objetivo medir la concentración de partículas 
         en el aire utilizando sensores conectados a un ESP32. 
         Se Realizo con la intencion de medir la calidad del aire en ciertas parte
         de la Univesidad Tecnologica de Morelia {" "}
-        <img src={logoUtm} alt="Logo de la Utm"  className="logoUtm"
+        <img src={logoUniversidad} alt="Logo de la Utm"  className="logoUtm"
         style={{width: "80px", height:"25px", verticalAlign: "middle", margin:" 0 5px"}}  
         onClick={() => window.open("https://ut-morelia.edu.mx/", "_blank")} />
         Los datos recolectados son procesados en tiempo real y se muestran en este tablero.
@@ -211,34 +60,37 @@ return (
         borderRadius: "10px",
         color: "#ffffffff",
         textAlign: "center",
+        marginBottom:"10px"
       }}
       >
-      <h2 style={{color: "white"}}> ¿Qué sensor desea Utilizar?</h2>
+      <div className="linea-azul ">
+      <h2 style={{color: COLORES.blanco, marginTop:"10px"}}> Elige entre nuestras 4 sensores disponibles</h2>
+      </div>
       <div style={{justifyContent:"center", display:"flex", gap:"10px",
-      marginBottom:"20px"}}>
+      marginBottom:"10px"  , borderBottom: "2px solid" + COLORES.utm, borderRadius: "10px", paddingBottom: "10px"}}>
       <button className="buttonPM" onClick={() => {
-        showSnackbar2("Leyendo Partículas 2.5", "info");  // tipo informativo
+        showSnackbar2("Leyendo Partículas 2.5", "info", "#1de4f7" );  // tipo informativo
         setSensorActivo(SENSORES.PM25);
       }}>
         PM2.5
       </button>
 
       <button className="buttonCO2" onClick={() => {
-        showSnackbar2("Leyendo Oxígeno", "success"); // tipo éxito
+        showSnackbar2("Leyendo Oxígeno", "info", "#4CAF50"); // tipo éxito
         setSensorActivo(SENSORES.CO2);
       }}>
         CO2
       </button>
 
       <button className="buttonTemp" onClick={() => {
-        showSnackbar2("Leyendo Temperatura", "success"); // color principal
+        showSnackbar2("Leyendo Temperatura", "info", "#FF5722"); // color principal
         setSensorActivo(SENSORES.TEMPERATURA);
       }}>
         Temperatura
       </button>
 
       <button className="buttonPruebas" onClick={() => {
-        showSnackbar2("Leyendo Pruebas de Simulación","success"); // tono neutro
+        showSnackbar2("Leyendo Pruebas de Simulación","info", "#ff00d4"); 
         setSensorActivo(SENSORES.SIMULACION);
       }}>
         Lectura de Prueba
@@ -253,6 +105,7 @@ return (
 
       </div>
       </div>
+      
       <input type="date"
         className="date-input"
         onChange={(e) => {
@@ -262,7 +115,8 @@ return (
           setFechaSeleccionada(new Date(year, month - 1, day));
         }}
       />
-      <button className="button-search" onClick={buscarPorFecha}>Buscar
+      <button className="button-search" onClick={buscarPorFecha}
+      >Filtrar
       </button>
       {/* Resultados --Historial de lecturas */}
       <div
@@ -398,7 +252,12 @@ return (
     <Alert
     onClose={() => setSnackbar2({ ...snackbar2, open: false })}
     severity={snackbar2.severity}
-    sx={{ width: '100%' }}
+    sx={{
+      width: "100%",
+      color: snackbar2.customColor || "#ff00d4",
+      border: "1px solid" + snackbar2.customColor || "#ff00d4",
+      "& .MuiAlert-icon": { color: snackbar2.customColor || "white" },
+    }}
     >
     {snackbar2.message}
     </Alert>

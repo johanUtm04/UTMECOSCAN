@@ -1,12 +1,12 @@
 import "./App.css"; //Hoja de estilos--
 import { logout, LoadingBar, LoginPage, DashboardPage } from "./ui";//Importacion de componentes
-import { logo, logoUtm, fondoTablero, sensorTemperatura, co2, particulas, utmLogo25 } from "./assets";//Importacion de las imagenes
+import { logo, logoTics, fondoTablero, sensorTemperatura, co2, particulas, utmLogo25, logoUniversidad } from "./assets";//Importacion de las imagenes
 import { usePreloadImages } from "./hooks/usePreloadImages"; //Importacion de Effectos--
 import { useAuthListener } from "./hooks/useUnsubscribe";
 
 function App() {
   //Enlaze a useEffect de Pre-Cargar imgs--
-  usePreloadImages([logo, logo, logoUtm, fondoTablero, sensorTemperatura, co2, particulas, utmLogo25]);
+  usePreloadImages([logo, logo, logoTics, fondoTablero, sensorTemperatura, co2, particulas, utmLogo25, logoUniversidad]);
   //Asignar Valores del AuthListener--
   const {usuario, loading} = useAuthListener();
   //Barra de carga superior--

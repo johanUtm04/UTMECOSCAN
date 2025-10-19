@@ -30,10 +30,8 @@
   padding: 2px 5px;
   background: #1de4f7;
   border-radius: 10px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
   margin-bottom: 0px;
   border: 3px solid black;
-  box-shadow: 16px 8px 0px 0px ;
 }
 
 .message-welcome-user-container{
@@ -364,11 +362,13 @@
 
 /* Inicio de estilos Tablero */
 .msj-welcome-container{
-  padding: 10px;
-  border-Radius: 10px;
+  border-top: 2px solid #1de4f7;
+  border-radius: 10px;
   color: white;
-  text-Align: center,
+  text-Align: center;
+  margin-bottom: 5px;
 }
+
 /* Fin de estilos Tablero */
 
 

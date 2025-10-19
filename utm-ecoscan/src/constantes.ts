@@ -12,8 +12,10 @@ export const INTERVALO_LM5 = 5000;
 export const API_URL = "http://192.168.1.97/data-json";
 
 export const COLORES ={
-  PM25: "#18a39b",
-  CO2: "#4CAF50",
-  TEMPERATURA: "#FF5722",
-  PRUEBAS: "#ff00d4",
+  utm: "#1de4f7",
+  verder: "#4CAF50",
+  naranja: "#FF5722",
+  rosa: "#ff00d4",
+  fondo: "#0d1117",
+  blanco: "#ffffffff"
 }
