@@ -1,6 +1,6 @@
 import {useState, Typography,Card, CardContent, CardHeader, GraficaSensor, Snackbar, Alert} from "../ui";  //Importacion componentes--
 import "./Tablero.css" //Importacion de Hoja de estilos--
-import type {  TABLERO, SnackbarState, Lectura} from "../ui";//Importacion de interfaces (type)--
+import type {  TABLERO, SnackbarState} from "../ui";//Importacion de interfaces (type)--
 import {logoUniversidad} from "../assets/index";
 import { COLORES, SENSORES,} from "../constantes";
 import { useLecturas } from "../hooks/useLecturas";
