@@ -487,22 +487,4 @@
 }
 
 /* --- Tablero Responsivo --- */
-/* 1. Escritorio grande */
-@media (min-width: 1025px) {
-  
-}
 
-/* 2. Tablets grandes / laptops pequeños */
-@media (max-width: 1024px) {
-  /* Tu CSS para pantallas medianas */
-}
-
-/* 3. Tablets pequeñas / smartphones grandes */
-@media (max-width: 768px) {
-  /* Tu CSS para pantallas pequeñas */
-}
-
-/* 4. Smartphones pequeños */
-@media (max-width: 480px) {
-  /* Tu CSS para pantallas muy pequeñas */
-}

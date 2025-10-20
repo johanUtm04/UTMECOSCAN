@@ -390,3 +390,128 @@
     left: 100%;
   }
 }
+
+
+.modal {
+  display: flex;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  width: 300px;
+}
+
+
+/* Estilos responsivos (Todo el tablero) */
+/* 1. Escritorio grande (todo normal, no hace falta cambiar nada) */
+@media (min-width: 1025px) {
+  /* No se requiere ajuste, los estilos base ya funcionan bien */
+}
+
+/* 2. Tablets grandes / laptops pequeños */
+@media (max-width: 1024px) {
+  .buttonPM,
+  .buttonCO2,
+  .buttonTemp,
+  .buttonPruebas,
+  .buttonStop {
+    font-size: 1.2em;
+    padding: 0.5em 1.5em;
+  }
+
+  .date-input {
+    font-size: 0.9em;
+    padding: 0.4em 0.8em;
+  }
+
+  .button-search {
+    font-size: 0.9em;
+    padding: 0.3em 0.6em;
+  }
+
+  .logoUtm {
+    height: 40px;
+  }
+
+  table {
+    font-size: 0.9em;
+  }
+}
+
+/* 3. Tablets pequeñas / smartphones grandes */
+@media (max-width: 768px) {
+  /* Los botones en columna */
+  .buttonPM,
+  .buttonCO2,
+  .buttonTemp,
+  .buttonPruebas,
+  .buttonStop {
+    font-size: 1em;
+    padding: 0.4em 1.2em;
+    width: 100%;
+    justify-content: center;
+  }
+
+  .date-input {
+    display: block;
+    width: 100%;
+    margin-bottom: 10px;
+  }
+
+  .button-search {
+    width: 100%;
+    display: block;
+  }
+
+  .logoUtm {
+    height: 35px;
+  }
+
+  table {
+    font-size: 0.85em;
+  }
+}
+
+/* 4. Smartphones pequeños */
+@media (max-width: 480px) {
+  .buttonPM,
+  .buttonCO2,
+  .buttonTemp,
+  .buttonPruebas,
+  .buttonStop {
+    font-size: 0.9em;
+    padding: 0.3em 1em;
+  }
+
+  .date-input {
+    font-size: 0.8em;
+  }
+
+  .button-search {
+    font-size: 0.8em;
+  }
+
+  .logoUtm {
+    height: 30px;
+  }
+
+  table {
+    font-size: 0.8em;
+  }
+
+  th, td {
+    padding: 6px;
+  }
+}

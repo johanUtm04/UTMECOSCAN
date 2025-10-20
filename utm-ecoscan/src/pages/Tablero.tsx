@@ -1,9 +1,10 @@
 import {useState, Typography,Card, CardContent, CardHeader, GraficaSensor, Snackbar, Alert} from "../ui";  //Importacion componentes--
 import "./Tablero.css" //Importacion de Hoja de estilos--
-import type {  TABLERO, SnackbarState} from "../ui";//Importacion de interfaces (type)--
+import type {  TABLERO, SnackbarState, Lectura} from "../ui";//Importacion de interfaces (type)--
 import {logoUniversidad} from "../assets/index";
 import { COLORES, SENSORES,} from "../constantes";
 import { useLecturas } from "../hooks/useLecturas";
+
 
 //Inicio de Componente--
 function Tablero({user}: TABLERO){
@@ -11,8 +12,6 @@ function Tablero({user}: TABLERO){
   const [sensorActivo, setSensorActivo] = useState("");
   const [fechaSeleccionada, setFechaSeleccionada] = useState<Date | null>(null);
   const { lecturas, buscarPorFecha } = useLecturas(user, sensorActivo, fechaSeleccionada);
-
-
 
 const lecturasFiltradas = lecturas.filter((l) => l.sensor === sensorActivo);
 const [snackbar2, setSnackbar2] = useState<SnackbarState>({
@@ -130,6 +129,7 @@ return (
       >
         {/* Titulo de arriba */}
       <h3 style={{marginBottom:"0.2 rem", color: "white"}}>Historial de Lecturas</h3>
+      
     <table style={{ width: "100%", borderCollapse: "collapse" }}>
       {/* Encabezado de la tabla */}
       <thead>
@@ -138,6 +138,7 @@ return (
           <th style={{ textAlign: "left", padding: "12px", fontWeight: "600" }}>Valor</th>
           <th style={{ textAlign: "left", padding: "12px", fontWeight: "600" }}>Fecha</th>
           <th style={{ textAlign: "left", padding: "12px", fontWeight: "600" }}>Calidad</th>
+          <th style={{ textAlign: "left", padding: "12px", fontWeight: "600" }}>detalles</th>
         </tr>
       </thead>
 
@@ -197,6 +198,14 @@ return (
           <td style={{ padding: "8px" }}>{valor} {unidad(l.sensor)} </td>
           <td style={{ padding: "8px" }}>{l.timestamp.toDate().toLocaleString()}</td>
           <td style={{ padding: "8px", fontWeight: "bold", color }}>{estado}</td>
+          <td style={{ padding: "8px", fontWeight: "bold", color }}> 
+
+            <button 
+            > Ir a detalles--</button>
+
+
+            
+            </td>
         </tr>
       );
     })}
@@ -204,6 +213,7 @@ return (
 </table>
       </div>
     </div>
+
     {lecturas.length === 0 ? (
       <Typography variant="h4" color="#ffffffff" fontWeight={600}>
         No hay datos aún.
@@ -262,6 +272,8 @@ return (
     {snackbar2.message}
     </Alert>
     </Snackbar>
+
+
   </div>
   
 );
