@@ -202,9 +202,6 @@ return (
 
             <button 
             > Ir a detalles--</button>
-
-
-            
             </td>
         </tr>
       );

@@ -5,119 +5,124 @@ import { SENSORES, INTERVALO_LM5, API_URL } from "../constantes";
 export function useLecturas(user: any, sensorActivo: string, fechaSeleccionada: Date | null) {
   const [lecturas, setLecturas] = useState<Lectura[]>([]);
   let intervalId: NodeJS.Timeout;
+
+  // Buscar lecturas por fecha
   const buscarPorFecha = async () => {
     console.log("Fecha actual:", fechaSeleccionada);
-      if (!fechaSeleccionada) return;
-      console.log("Se selecciono la fecha")
-      const datos = await getLecturasPorDia(fechaSeleccionada)
-      setLecturas(datos);
+    if (!fechaSeleccionada) return;
+    console.log("Se seleccionó la fecha");
+    const datos = await getLecturasPorDia(fechaSeleccionada);
+    setLecturas(datos);
   };
 
-  async function getLecturasPorDia (fecha: Date){
-      const inicio = new Date (fecha);
-      inicio.setHours(0,0,0,0);
+  // Obtener lecturas de Firebase por día
+  async function getLecturasPorDia(fecha: Date) {
+    const inicio = new Date(fecha);
+    inicio.setHours(0, 0, 0, 0);
 
-      const fin = new Date (fecha);
+    const fin = new Date(fecha);
+    fin.setHours(23, 59, 59, 999);
 
-      fin.setHours(23,59,59,999)
+    const q = query(
+      collection(db, "Lecturas del BM280"),
+      where("timestamp", ">=", Timestamp.fromDate(inicio)),
+      where("timestamp", "<=", Timestamp.fromDate(fin))
+    );
 
-      const q = query (
-          collection (db, "Lecturas del BM280"),
-          where ("timestamp", ">=", Timestamp.fromDate(inicio)),
-          where ("timestamp", "<=", Timestamp.fromDate(fin))
-      );
+    const querySnapshot = await getDocs(q);
+    const resultadosConsulta: any[] = [];
 
-      const querySnapshot = await getDocs(q);
+    querySnapshot.forEach(doc => {
+      resultadosConsulta.push({ id: doc.id, ...doc.data() });
+    });
 
-      const resultadosConsulta : any []=[];
-
-      querySnapshot.forEach(doc => {
-          resultadosConsulta.push({id: doc.id,...doc.data()})
-      });
-        return resultadosConsulta
+    return resultadosConsulta;
   }
 
-useEffect(() => {
-  const iniciarLectura = () => {
-    if (sensorActivo === SENSORES.SIMULACION) {
-      intervalId = setInterval(async () => {
-        const sensores = [SENSORES.CO2, SENSORES.TEMPERATURA, SENSORES.PM25];
-        const dataSimulada = {
-        sensor: sensores[Math.floor(Math.random() * sensores.length)],
-        valor: Math.floor(Math.random() * 10000),
-        };
-        const nuevaLectura: Lectura = {
-        timestamp: Timestamp.now(),
-        id: Date.now().toString(),
-        sensor: dataSimulada.sensor,
-        valor: dataSimulada.valor,
-        };
-        setLecturas((estadoAnterior) => 
-          [...estadoAnterior, nuevaLectura]);
-        const resultado = checkThreshold(nuevaLectura.sensor, 
-          nuevaLectura.valor);
-        if (resultado.level !== "ok") {
-        await pushNotificationForUser(user.uid, {
-        sensor: nuevaLectura.sensor,
-        message: resultado.message,
-        level: resultado.level,
-        value: nuevaLectura.valor
-        });
+  // Inicia la lectura de sensores
+  useEffect(() => {
+    const iniciarLectura = () => {
+      if (sensorActivo === SENSORES.SIMULACION) {
+        // Simulación de todos los sensores
+        intervalId = setInterval(async () => {
+          const sensores = [SENSORES.CO2, SENSORES.TEMPERATURA, SENSORES.PM25];
+          const dataSimulada = {
+            sensor: sensores[Math.floor(Math.random() * sensores.length)],
+            valor: Math.floor(Math.random() * 10000),
+          };
+
+          const nuevaLectura: Lectura = {
+            timestamp: Timestamp.now(),
+            id: Date.now().toString(),
+            sensor: dataSimulada.sensor,
+            valor: dataSimulada.valor,
+          };
+
+          setLecturas(prev => [...prev, nuevaLectura]);
+
+          const resultado = checkThreshold(nuevaLectura.sensor, nuevaLectura.valor);
+          if (resultado.level !== "ok") {
+            await pushNotificationForUser(user.uid, {
+              sensor: nuevaLectura.sensor,
+              message: resultado.message,
+              level: resultado.level,
+              value: nuevaLectura.valor
+            });
+          }
+        }, INTERVALO_LM5);
+
+      } else {
+        // Lectura real de ESP32 (PM2.5 y Temperatura a la par)
+        intervalId = setInterval(async () => {
+          try {
+            const res = await fetch(API_URL);
+            const data = await res.json();
+
+            // Lectura de Temperatura
+            const lecturaTemp: Lectura = {
+              timestamp: Timestamp.now(),
+              id: Date.now().toString() + "-temp",
+              sensor: data.sensor_temp,
+              valor: data.temperature,
+            };
+            setLecturas(prev => [...prev, lecturaTemp]);
+            await addDoc(collection(db, "Lecturas del BM280"), {
+              sensor: data.sensor_temp,
+              valor: data.temperature,
+              timestamp: lecturaTemp.timestamp,
+              Lugar: "Morelia",
+              userId: user?.uid,
+            });
+
+            // Lectura de PM2.5
+            const lecturaPM: Lectura = {
+              timestamp: Timestamp.now(),
+              id: Date.now().toString() + "-pm",
+              sensor: data.sensor_pm,
+              valor: data.pm25,
+            };
+            setLecturas(prev => [...prev, lecturaPM]);
+            await addDoc(collection(db, "Lecturas del PM2.5"), {
+              sensor: data.sensor_pm,
+              valor: data.pm25,
+              timestamp: lecturaPM.timestamp,
+              salon: "Salon A10",
+              userId: user?.uid,
+            });
+
+          } catch (error) {
+            console.error("Error al leer los sensores:", error);
+          }
+        }, INTERVALO_LM5);
       }
-      }, INTERVALO_LM5);
-    }
+    };
 
-    else if (sensorActivo === SENSORES.PM25) {
-      intervalId = setInterval(async () => {
-        console.log("leyendo sensor de partículas (PM2.5)...");
-        const res = await fetch(API_URL);
-        const data = await res.json();
-        const nuevaLectura: Lectura = {
-        timestamp: Timestamp.now(),
-        id: Date.now().toString(),
-        sensor: data.sensor,
-        valor: data.pm25,
-        };
+    iniciarLectura();
+    return () => {
+      if (intervalId) clearInterval(intervalId);
+      console.log("Se limpió el sensor anterior");
+    };
+  }, [sensorActivo, user]);
 
-        setLecturas((prev) => [...prev, nuevaLectura]);
-        await addDoc(collection(db, "Lecturas del PM2.5"), {
-        sensor: data.sensor,
-        valor: data.pm25,
-        timestamp: nuevaLectura.timestamp,
-        salon: "Salon A10",
-        userId: user?.uid,
-        });
-      }, INTERVALO_LM5);
-    }
-
-    else if (sensorActivo === SENSORES.TEMPERATURA) {
-      intervalId = setInterval(async () => {
-        console.log("leyendo sensor de Temperatura...");
-        const conexion = await fetch(API_URL);
-        const dataBM280 = await conexion.json();
-        const nuevaLecturaBM280: Lectura = {
-        timestamp: Timestamp.now(),
-        id: Date.now().toString(),
-        sensor: dataBM280.sensor,
-        valor: dataBM280.temperature,
-        };
-        setLecturas((prev) => [...prev, nuevaLecturaBM280]);
-        await addDoc(collection(db, "Lecturas del BM280"), {
-        sensor: dataBM280.sensor,
-        valor: dataBM280.temperature,
-        timestamp: nuevaLecturaBM280.timestamp,
-        Lugar: "Morelia",
-        userId: user?.uid,
-        });
-      }, INTERVALO_LM5);
-    }
-  };
-  iniciarLectura();
-  return () => {
-    if (intervalId) clearInterval(intervalId);
-    console.log("Se limpió el sensor anterior");
-  };
-}, [sensorActivo, user]);
-return { lecturas, setLecturas, getLecturasPorDia, buscarPorFecha };
+  return { lecturas, setLecturas, getLecturasPorDia, buscarPorFecha };
 }
-

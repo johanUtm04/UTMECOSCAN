@@ -37,7 +37,7 @@ return (
   </Box>
     {/* Seccion del Formulario*/}
     <Typography variant="h5" className="title-login-register">
-    Iniciar Sesión En UtmEcoScan
+    Iniciar Sesión
     </Typography>
       <form onSubmit={handleSubmit} className="form-container">
         {/* Input Correo Electrónico */}

@@ -397,8 +397,15 @@
     width: 95%;
   }
 
-  /* Tablero */
-
+  .navbar-tablero{
+    display: flex;
+    flex-wrap: wrap;        /* Para que bajen si no caben */
+    justify-content: center; /* Centra horizontalmente */
+    align-items: center;     /* Centra verticalmente */
+    gap: 10px;  
+    text-align: center;
+    font-size: 1.4rem;
+  }
 }
 
 /* Tablets en Modo vertical */

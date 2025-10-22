@@ -390,8 +390,6 @@ void loop() {
 }
 Codigo Axel Versión1 (Arduino)🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑:
 
-
-
 Codigo de Johan (Arduino)🚸🚸🚸🚸🚸🚸🚸🚸🚸🚸🚸🚸🚸🚸🚸🚸🚸🚸🚸🚸🚸
 #include <WiFi.h>
 #include <WebServer.h>
@@ -600,9 +598,9 @@ Mejorar sistema de filtros...✔
 Refactorizar App✔
 Refactorizar Codigo Login...✔
 Refactorizar Codigo GraficaSensor...✔
+Footer...✔
 Lazy loading...
 Botones Tomen Todo el color que les corresponde...
-Footer...
 
 //instracciones para instalacion
 0.-Descargar git
