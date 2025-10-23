@@ -15,7 +15,7 @@ function Navbar({user, onLogout}: NavbarProps){
       <img src={logoTics}alt="Logo tics utm" className="logo-tics"
       onClick={() =>window.open("https://ut-morelia.edu.mx/index.php/tecnologias-de-la-informacion/","_blank")}/>
       <Typography variant="h5" sx={{ fontWeight: 600, color:COLORES.fondo, border: "2px solid red" }}>
-        Sistema de Medición de Calidad del Aire
+        Sistema de Medición de Calidad del Aire--
       </Typography>
       <div className="message-welcome-user-container">
         <Typography variant="h5" sx={{ fontWeight: 700, color:COLORES.fondo, border: "2px solid orange" }}>

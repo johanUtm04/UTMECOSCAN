@@ -12,7 +12,7 @@ export const INTERVALO_LM5 = 5000;
 export const API_URL = "https://e926eb201648.ngrok-free.app/data-json";
 
 export const COLORES ={
-  utm: "#bdf71dff",
+  utm: "#1de4f7",
   verder: "#4CAF50",
   naranja: "#FF5722",
   rosa: "#ff00d4",
