@@ -9,7 +9,7 @@ export const SENSORES ={
 export const INTERVALO_LM5 = 5000;
 
 //Url del esp que este usando en ese rato, 
-export const API_URL = "https://24a6d156daaf.ngrok-free.app/data-json";
+export const API_URL = "https://e926eb201648.ngrok-free.app/data-json";
 
 export const COLORES ={
   utm: "#1de4f7",
