@@ -3,7 +3,7 @@ export const SENSORES ={
     PM25: "PM2.5",
     PM10: "PM10",
     TEMPERATURA: "Temperatura",
-    CO2: "CO2",
+    CO2: "CO2"
 };
 
 export const INTERVALO_LM5 = 5000;
