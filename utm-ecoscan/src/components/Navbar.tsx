@@ -14,18 +14,18 @@ function Navbar({user, onLogout}: NavbarProps){
     <div className="navbar-tablero">
       <img src={logoTics}alt="Logo tics utm" className="logo-tics"
       onClick={() =>window.open("https://ut-morelia.edu.mx/index.php/tecnologias-de-la-informacion/","_blank")}/>
-      <Typography variant="h5" sx={{ fontWeight: 600, color:COLORES.fondo, border: "2px solid red" }}>
+      <Typography variant="h5" sx={{ fontWeight: 600, color:COLORES.fondo}}>
         Sistema de Medición de Calidad del Aire--
       </Typography>
       <div className="message-welcome-user-container">
-        <Typography variant="h5" sx={{ fontWeight: 700, color:COLORES.fondo, border: "2px solid orange" }}>
+        <Typography variant="h5" sx={{ fontWeight: 700, color:COLORES.fondo }}>
           ¡Bienvenido! {user.displayName || user.email}
         </Typography>
         <IconButton size="large" onClick={handleMenu} color="inherit">
           {user.photoURL ? (<img className="img-user" src={user.photoURL} alt={user.displayName} />) : (
           <AccountCircle sx={{ fontSize: 40, color:COLORES.fondo }} />)}
         </IconButton>
-        <div style={{border: "2px solid red"}}>
+        <div>
         <Notificaciones user={user} />
         </div>
         <Menu anchorEl={anchorEl} open={open} onClose={handleClose}

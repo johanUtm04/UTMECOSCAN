@@ -1,6 +1,7 @@
 //Modulo de inmportacion de componentes de Mui, componentes, etc (archivo de barril)
 export { default as GraficaSensor} from "./components/GraficaSensor";
 export { useEffect, useState } from "react";
+export {DetallesLectura} from "./components/DetallesLectura"
 export { default as Button} from "@mui/material/Button";
 export {Typography, Card, CardContent , CardHeader, Snackbar, Alert} from "@mui/material";
 export {default as Menu} from "@mui/material/Menu";
@@ -23,3 +24,4 @@ export * from "../src/interfaces/navbar";
 export * from "../src/interfaces/lectura";
 export * from "../src/interfaces/tablero";
 export * from "../src/interfaces/snackBar";
+export * from "../src/interfaces/sensores";
