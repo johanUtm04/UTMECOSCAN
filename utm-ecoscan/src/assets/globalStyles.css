@@ -21,7 +21,7 @@ h1, h2, h3 {
   padding: 1px;
   color: white;
   z-index: 1;
-  overflow-y: auto;
+
 }
 
 .main-container-tablero{
@@ -1389,17 +1389,7 @@ h1, h2, h3 {
   border: 1px solid #1de4f7;
 }
 
-/* Scroll personalizado */
-.tabla-historial-container::-webkit-scrollbar {
-  width: 10px;
-}
-.tabla-historial-container::-webkit-scrollbar-thumb {
-  background: #1de4f7;
-  border-radius: 6px;
-}
-.tabla-historial-container::-webkit-scrollbar-track {
-  background: #1b1b2e;
-}
+
 
 /* Tabla con estilo futurista */
 .tabla-historial {
@@ -1450,7 +1440,7 @@ h1, h2, h3 {
 }
 
 /* Filas con glow por sensor */
-tr[data-sensor="PM25"] td {
+tr[data-sensor="PM2.5"] td {
   border-left: 4px solid #1de4f7;
 }
 tr[data-sensor="CO2"] td {
@@ -1606,3 +1596,4 @@ tr[data-sensor="SIMULACION"] td {
         margin-bottom: 0;
     }
 }
+

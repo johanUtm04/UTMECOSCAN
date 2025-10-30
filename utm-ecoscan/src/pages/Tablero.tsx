@@ -55,9 +55,6 @@ const showSnackbar = (message: string) =>{
 
 //Types: Sirve para definir alias de tipos(strings literales, uniones, tuplas)
 type SnackbarSeverity = 'success' | 'error' | 'info' | 'warning';
-
-
-
 return (
   //Div principal: 
   <div style={{ padding: "20px"}}>
@@ -118,7 +115,7 @@ return (
 
       <button className="botonCo2" onClick={() => {
         showSnackbar2("Leyendo Oxígeno", "info", "#4CAF50"); // tipo éxito
-        setSensorActivo(SENSORES.CO2);
+
       }}>
         CO2
         <span className={`bombilla ${conectados[`${SENSORES.CO2}`] ? "encendida" : "apagada"}`}>🔆</span>
@@ -126,7 +123,7 @@ return (
 
      <button className="botonTemperatura" onClick={() => {
         showSnackbar2("Leyendo Temperatura", "info", "#FF5722"); // color principal
-        setSensorActivo(SENSORES.TEMPERATURA);
+
       }}>
         Temperatura
         <span className={`bombilla ${conectados[`${SENSORES.TEMPERATURA}`] ? "encendida" : "apagada"}`}>🔆</span>
@@ -164,7 +161,6 @@ return (
       {/* Resultados --Historial de lecturas */}
       <div
       style={{
-        // Efecto de desenfoque bonito
         borderRadius: "12px",                     // Bordes redondeados
         padding: "1rem",                          // Espacio interno
         maxHeight: "250px",                       // Altura máxima de la tabla

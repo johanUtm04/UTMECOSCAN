@@ -24,7 +24,7 @@ export function useLecturas(user: any, sensorActivo: string, fechaSeleccionada: 
     fin.setHours(23, 59, 59, 999);
 
     const q = query(
-      collection(db, "Lecturas del BM280"),
+      collection(db, "lecturas simuladas"),
       where("timestamp", ">=", Timestamp.fromDate(inicio)),
       where("timestamp", "<=", Timestamp.fromDate(fin))
     );
@@ -59,7 +59,14 @@ export function useLecturas(user: any, sensorActivo: string, fechaSeleccionada: 
           };
 
           setLecturas(prev => [...prev, nuevaLectura]);
-
+            setLecturas(prev => [...prev, nuevaLectura]);
+            await addDoc(collection(db, "lecturas simuladas"), {
+              sensor: dataSimulada.sensor,
+              valor: dataSimulada.valor,
+              timestamp: nuevaLectura.timestamp,
+              salon: "Salon A10",
+              userId: user?.uid,
+            });
           const resultado = checkThreshold(nuevaLectura.sensor, nuevaLectura.valor);
           if (resultado.level !== "ok") {
             await pushNotificationForUser(user.uid, {

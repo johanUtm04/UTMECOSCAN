@@ -1,0 +1,10 @@
+
+/* Cursor ecológico en todo el tablero */
+div[style*="padding: 20px"] {
+    cursor: url('../assets/imgs/cursor-eco.png'), auto;
+}
+
+/* Cursor de “manito” sobre botones */
+button {
+    cursor: url('../assets/imgs/cursor-eco.png'), pointer;
+}
