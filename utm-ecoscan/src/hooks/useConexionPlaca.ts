@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import { SENSORES } from "../constantes";
 
 /*
 useConexionPlaca <__>
@@ -60,7 +59,7 @@ co2: true
         return () => clearInterval(intervalo);
     }, [url, intervaloMs]) //Array con dependencias para controlar la ejecucion del efecto
 
-    console.log("PM2.5: ", conectados )
+    console.log("lol: ", conectados )
 return conectados;
 //El hook devuelve el booleando 'conectado', para usarlo en cualquier componente del proyetco
 }

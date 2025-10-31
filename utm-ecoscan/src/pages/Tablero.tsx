@@ -1,4 +1,4 @@
-import {useState, Typography,Card, CardContent, CardHeader, GraficaSensor, Snackbar, Alert, useEffect} from "../ui";  //Importacion componentes--
+import {useState, Typography, GraficaSensor, Snackbar, Alert, useEffect} from "../ui";  //Importacion componentes--
 import "./Tablero.css" //Importacion de Hoja de estilos--
 import type {  TABLERO, SnackbarState} from "../ui";//Importacion de interfaces (type)--
 import {logoUniversidad} from "../assets/index";
@@ -36,7 +36,7 @@ useEffect(() => {
   };
 }, []);
 
-const lecturasFiltradas = lecturas.filter((l) => l.sensor === sensorActivo);
+//const lecturasFiltradas = lecturas.filter((l) => l.sensor === sensorActivo);
 const [snackbar2, setSnackbar2] = useState<SnackbarState>({
   open: false,
   message: "",
@@ -105,25 +105,20 @@ return (
         
       <button className="botonPM" onClick={() => {
         showSnackbar2("Leyendo Partículas 2.5", "info", "#1de4f7" );  // tipo informativo
-
+        setSensorActivo(SENSORES.PM25);
       }}>
         PM2.5
         <span className={`bombilla ${conectados[`${SENSORES.PM25}`] ? "encendida" : "apagada"}`}>🔆</span>
       </button>
-
-      
-
       <button className="botonCo2" onClick={() => {
         showSnackbar2("Leyendo Oxígeno", "info", "#4CAF50"); // tipo éxito
-
       }}>
         CO2
         <span className={`bombilla ${conectados[`${SENSORES.CO2}`] ? "encendida" : "apagada"}`}>🔆</span>
       </button>
-
      <button className="botonTemperatura" onClick={() => {
         showSnackbar2("Leyendo Temperatura", "info", "#FF5722"); // color principal
-
+        setSensorActivo(SENSORES.TEMPERATURA);
       }}>
         Temperatura
         <span className={`bombilla ${conectados[`${SENSORES.TEMPERATURA}`] ? "encendida" : "apagada"}`}>🔆</span>
@@ -258,45 +253,17 @@ return (
       </div>
     </div>
 
-    {lecturas.length === 0 ? (
-      <Typography variant="h4" color="#ffffffff" fontWeight={600}>
-        No hay datos aún.
-      </Typography>
-    ) : /* en caso de que SI hay datos mostrar esto: */ (
-      <div style={{ display: "flex", flexWrap: "wrap", gap: "15px", padding: "10px",}}>
-        {lecturasFiltradas.map((l) => (
-          /* Grafica */
-          <Card
-            key={l.id}
-            sx={{
-              width: 200,
-              borderRadius: 2,
-              boxShadow: 3,
-            }}
-          > 
-          <div style={{marginTop:"20px", background:"white", padding: "10px", borderRadius: "10px"}}>
-          <h3 style={{textAlign:"center",}}> {sensorActivo} - Evolucion</h3>
-          <GraficaSensor
-            datos={lecturasFiltradas.map(l => ({
-              timestamp: l.timestamp.toDate(), 
-              valor: l.valor
-            }))}
-            sensor={sensorActivo}
-          />
-          </div>
-            <CardHeader title={l.sensor} sx={{ color: "#ff0000ff" }} />
-            <CardContent>
-              <Typography variant="h5" sx={{ color: "#000000ff" }}>
-                {l.valor ?? "Sin Valor registrado"} 
-              </Typography>
-              <Typography variant="body2" sx={{ color: "#000000ff" }}>
-                Última actualización 
-              </Typography>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
-    )}
+{lecturas.length === 0 ? (
+  <Typography variant="h4" color="#ffffffff" fontWeight={600}>
+    No hay datos aún.
+  </Typography>
+) : (
+  <div>
+    {/* Aquí NO pintamos las gráficas ni tarjetas automáticamente */}
+    {/* Solo dejamos que se muestren los datos en la tabla */}
+  </div>
+)}
+
     <Snackbar
     open={snackbar2.open}
     autoHideDuration={3000}
@@ -316,7 +283,7 @@ return (
     {snackbar2.message}
     </Alert>
     </Snackbar>
-
+<br />
 {detalleAbierto && lecturaSeleccionada && (
   <div className="fixed inset-0 bg-black bg-opacity-60 flex justify-center items-center z-50">
     <div className="bg-white p-6 rounded-xl shadow-xl w-[90%] max-w-lg relative">
@@ -338,7 +305,7 @@ return (
       <p><strong>Valor:</strong> {lecturaSeleccionada.valor}</p>
       <p><strong>Fecha:</strong> {lecturaSeleccionada.timestamp.toDate().toLocaleString()}</p>
       <p><strong>ID:</strong> {lecturaSeleccionada.id}</p>
-
+ 
       <div className="mt-4 flex justify-center">
         <GraficaSensor
           datos={[{
@@ -347,7 +314,7 @@ return (
           }]}
           sensor={lecturaSeleccionada.sensor}
         />
-      </div>
+      </div> 
 
     </div>
   </div>

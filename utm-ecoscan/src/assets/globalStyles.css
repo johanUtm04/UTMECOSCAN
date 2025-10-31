@@ -1536,6 +1536,35 @@ tr[data-sensor="SIMULACION"] td {
         padding: 10px;
         flex-direction: column;
     }
+  
+  .buttonPM,
+  .buttonCO2,
+  .buttonTemp,
+  .buttonPruebas,
+  .buttonStop,
+  .botonPM,
+  .botonCo2,
+  .botonTemperatura,
+  .botonPruebas,
+  .botonDetener {
+    font-size: 0.4em;
+    padding: 0.25em 0.8em;
+    width: 50%;
+    justify-content: center;
+  }
+
+  .buttonPM::after,
+  .buttonPM::before,
+  .buttonCO2::after,
+  .buttonCO2::before,
+  .buttonTemp::after,
+  .buttonTemp::before,
+  .buttonPruebas::after,
+  .buttonPruebas::before,
+  .buttonStop::after,
+  .buttonStop::before {
+    width: 6em; /* reducir efecto hover para pantallas pequeñas */
+  }
     
     .tabla-historial {
         font-size: 0.8rem;
@@ -1597,3 +1626,7 @@ tr[data-sensor="SIMULACION"] td {
     }
 }
 
+/* Botones tablero vista móvil extra pequeña */
+@media (max-width: 360px) {
+
+}

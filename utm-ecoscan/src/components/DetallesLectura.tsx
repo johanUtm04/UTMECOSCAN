@@ -3,7 +3,7 @@ import { useState } from "react";
 import { useDetallesLectura } from "../hooks/useVerDetalles";
 
 export function DetallesLectura() {
-  const [fecha, setFecha] = useState(new Date());
+  const [fecha] = useState(new Date());
   const { detalles, cargando, obtenerDetallesPorFecha } = useDetallesLectura();
 
   const handleBuscar = () => {
