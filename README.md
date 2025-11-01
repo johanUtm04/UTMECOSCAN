@@ -1,11 +1,11 @@
 # UTM-ECOSCAN 🍃
 
-**Monitoreo Ambiental en Tiempo Real para espacion Universitarios**
+**Monitoreo Ambiental en Tiempo Real para espacios Universitarios**
 
 ![Estado](https://img.shields.io/badge/estado-en%20producción-brightgreen)
 
 <p align="center">
-  <img src="./assets/banner.webp" alt="UTM-ECOSCAN Banner" width="800">
+  <img src="./assets/banner.jpg" alt="UTM-ECOSCAN Banner" width="800">
 </p>
 
 
@@ -31,3 +31,16 @@ Y para llevar esto a cabo, nos hemos planteado unos **objetivos especificos**.
 - Medir de la manera más precisa y calibrada posible los datos crudos del aire.  
 - Crear una interfaz y experiencia de usuario (UX) agradable, intuitiva y accesible.  
 - Concientizar a la comunidad sobre la calidad del aire que respiramos.
+
+## Tecnologías Utilizadas
+
+- <img src="./assets/Arduino.png" width="20"/> **Arduino**
+- <img src="./assets/React.png" width="20"/> **REACT**
+- <img src="./assets/TypeScript.png" width="20"/> **JavaScript**
+- <img src="./assets/Firebase.png" width="20"/> **Firebase**
+- <img src="./assets/Node.png" width="20"/> **Node.js**
+- <img src="./assets/Css.png" width="20"/> **Css**
+
+
+## Capturas de Pantalla
+[Pendiente...]
